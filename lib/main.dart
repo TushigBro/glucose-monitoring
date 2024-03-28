@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:glucose_monitoring/log_in.dart';
+import 'package:glucose_monitoring/landing_screen.dart';
 
 //Хамгийн эхэнд ажиллана.
 void main() {
@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
         scaffoldBackgroundColor: const Color(0xffF5FFFF),
         useMaterial3: true,
       ),
-      home: const LoginScreen(),
+      home: const LandingScreen(),
     );
   }
 }
