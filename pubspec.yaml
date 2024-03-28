@@ -19,3 +19,12 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  fonts:
+    - family: SF Pro Text
+      fonts:
+        - asset: fonts/SF-Pro-Text/SF-Pro-Text-Regular.otf
+          weight: 400
+
+
+assets:
+ - assets/logo.png

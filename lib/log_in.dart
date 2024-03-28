@@ -18,48 +18,56 @@ class _LoginScreenState extends State<LoginScreen> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(height: 128),
             Center(
-              child: Text(
-                'Welcome! Lets log in!',
+              child: const Text(
+                'gGauge',
                 style: TextStyle(
                   fontSize: 24,
+                  fontFamily: 'SF Pro Text',
                 ),
               ),
             ),
             const SizedBox(height: 12),
-            Text('E-mail'),
-            TextField(
-              onChanged: (value) {
-                print(value);
-              },
-            ),
-            const SizedBox(height: 12),
-            Text('Password'),
-            TextField(
-              obscureText: true,
-              onChanged: (value) {
-                print(value);
-              },
-            ),
             //Spacer -> Дараагийн widget хүртэлх боломжтой бүх зайг авч байгаа (Expanded)
             const Spacer(flex: 1),
             Center(
               child: InkWell(
                 onTap: () {},
                 child: Container(
-                  height: 42,
-                  width: 128,
+                  height: 57,
+                  width: 290,
                   decoration: BoxDecoration(
-                    color: Colors.deepPurple,
-                    borderRadius: BorderRadius.circular(10.0),
+                    color: Color(0xffD5F1FF),
+                    borderRadius: BorderRadius.circular(30.0),
                   ),
                   child: Center(
                     child: Text(
-                      'Нэвтрэх',
+                      'Log in',
                       style: TextStyle(
-                        color: Colors.white,
+                        color: Colors.black,
+                        fontFamily: 'SF Pro Text',
                       ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 12),
+            Center(
+              child: InkWell(
+                onTap: () {},
+                child: Container(
+                  height: 57,
+                  width: 290,
+                  decoration: BoxDecoration(
+                    color: Color(0xff00AAFF),
+                    borderRadius: BorderRadius.circular(30.0),
+                  ),
+                  child: Center(
+                    child: Text(
+                      'Sign in',
+                      style: TextStyle(
+                          color: Colors.black, fontFamily: 'SF Pro Text'),
                     ),
                   ),
                 ),
