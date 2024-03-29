@@ -15,13 +15,13 @@ class _LandingScreenState extends State<LandingScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(25.0),
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const SizedBox(height: 250),
+              const SizedBox(height: 35),
               //Asset-aas zurag unshih
               Image.asset(
                 'assets/images/logo.png',
@@ -30,9 +30,7 @@ class _LandingScreenState extends State<LandingScreen> {
               ),
               const Text(
                 'gGauge',
-                style: TextStyle(
-                  fontSize: 24,
-                ),
+                style: TextStyle(fontSize: 24),
               ),
               const SizedBox(height: 12),
 
@@ -58,9 +56,7 @@ class _LandingScreenState extends State<LandingScreen> {
                   child: const Center(
                     child: Text(
                       'Sign Up',
-                      style: TextStyle(
-                        color: Colors.black,
-                      ),
+                      style: TextStyle(color: Colors.black),
                     ),
                   ),
                 ),

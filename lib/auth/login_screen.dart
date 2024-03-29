@@ -20,20 +20,18 @@ class _LoginScreenState extends State<LoginScreen> {
             const SizedBox(height: 182),
             const Text(
               'Log in',
-              style: TextStyle(
-                fontSize: 32,
-              ),
+              style: TextStyle(fontSize: 32),
             ),
             const Text(
               'Please log in to continue',
-              style: TextStyle(
-                fontSize: 16,
-              ),
+              style:
+                  TextStyle(fontSize: 16, fontFamily: 'Manrope-ExtraLight.ttf'),
             ),
             const SizedBox(height: 60),
             TextField(
               decoration: InputDecoration(
                 prefixIcon: Icon(Icons.mail),
+                hintText: 'username',
                 border: OutlineInputBorder(),
               ),
             ),
@@ -41,9 +39,9 @@ class _LoginScreenState extends State<LoginScreen> {
             TextField(
               obscureText: true,
               decoration: InputDecoration(
-                prefixIcon: Icon(Icons.lock),
-                border: OutlineInputBorder(),
-              ),
+                  prefixIcon: Icon(Icons.lock),
+                  hintText: 'password',
+                  border: OutlineInputBorder()),
             ),
             const SizedBox(height: 100),
             InkWell(
