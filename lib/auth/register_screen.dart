@@ -52,7 +52,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 border: OutlineInputBorder(),
               ),
             ),
-            const SizedBox(height: 90),
+            const SizedBox(height: 70),
             InkWell(
               child: Container(
                 height: 57,
