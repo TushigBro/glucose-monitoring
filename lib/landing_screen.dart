@@ -30,7 +30,7 @@ class _LandingScreenState extends State<LandingScreen> {
               ),
               const Text(
                 'gGauge',
-                style: TextStyle(fontSize: 24),
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.w500),
               ),
               const SizedBox(height: 12),
 

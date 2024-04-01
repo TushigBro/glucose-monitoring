@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
       title: 'Glucose Monitoring',
       theme: ThemeData(
         scaffoldBackgroundColor: const Color(0xffF5FFFF),
-        fontFamily: 'Manrope.Regular.ttf',
+        fontFamily: 'Manrope',
         useMaterial3: true,
       ),
       home: const LandingScreen(),
