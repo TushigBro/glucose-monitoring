@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:glucose_monitoring/info_screen.dart';
 import 'package:glucose_monitoring/main_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -39,6 +40,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   decoration: InputDecoration(
                     prefixIcon: Icon(Icons.mail),
                     hintText: 'username',
+                    hintStyle: TextStyle(fontWeight: FontWeight.w200),
                     border: OutlineInputBorder(),
                   ),
                 ),
@@ -51,6 +53,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   decoration: InputDecoration(
                       prefixIcon: Icon(Icons.lock),
                       hintText: 'password',
+                      hintStyle: TextStyle(fontWeight: FontWeight.w200),
                       border: OutlineInputBorder()),
                 ),
                 const SizedBox(height: 100),
@@ -60,7 +63,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const MainScreen(),
+                          builder: (context) => const InfoScreen(),
                         ),
                       );
                     }
@@ -69,12 +72,15 @@ class _LoginScreenState extends State<LoginScreen> {
                     height: 57,
                     decoration: BoxDecoration(
                       color: Color(0xff00AAFF),
-                      borderRadius: BorderRadius.circular(30.0),
+                      borderRadius: BorderRadius.circular(25.0),
                     ),
                     child: Center(
                       child: Text(
                         'Log In',
-                        style: TextStyle(color: Colors.black),
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w400),
                       ),
                     ),
                   ),

@@ -22,17 +22,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 const SizedBox(height: 182),
                 const Text(
                   'Sign up',
-                  style: TextStyle(fontSize: 32, fontFamily: 'Manrope'),
+                  style: TextStyle(fontSize: 32, fontWeight: FontWeight.w400),
                 ),
                 const Text(
                   'Please sign up to continue',
-                  style: TextStyle(fontSize: 16, fontFamily: 'Manrope'),
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w200),
                 ),
                 const SizedBox(height: 60),
                 TextField(
                   decoration: InputDecoration(
                     prefixIcon: Icon(Icons.mail),
                     hintText: 'username',
+                    hintStyle: TextStyle(fontWeight: FontWeight.w200),
                     border: OutlineInputBorder(),
                   ),
                 ),
@@ -42,6 +43,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   decoration: InputDecoration(
                     prefixIcon: Icon(Icons.lock),
                     hintText: 'password',
+                    hintStyle: TextStyle(fontWeight: FontWeight.w200),
                     border: OutlineInputBorder(),
                   ),
                 ),
@@ -51,6 +53,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   decoration: InputDecoration(
                     prefixIcon: Icon(Icons.lock),
                     hintText: 'Confirm your password',
+                    hintStyle: TextStyle(fontWeight: FontWeight.w200),
                     border: OutlineInputBorder(),
                   ),
                 ),
@@ -60,12 +63,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     height: 57,
                     decoration: BoxDecoration(
                       color: Color(0xff00AAFF),
-                      borderRadius: BorderRadius.circular(30.0),
+                      borderRadius: BorderRadius.circular(25.0),
                     ),
                     child: Center(
                       child: Text(
                         'Sign up',
-                        style: TextStyle(color: Colors.black),
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w400),
                       ),
                     ),
                   ),

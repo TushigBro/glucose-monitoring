@@ -15,13 +15,13 @@ class _LandingScreenState extends State<LandingScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Padding(
-        padding: const EdgeInsets.all(25.0),
+        padding: const EdgeInsets.all(30.0),
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const SizedBox(height: 35),
+              const SizedBox(height: 60),
               //Asset-aas zurag unshih
               Image.asset(
                 'assets/images/logo.png',
@@ -38,33 +38,6 @@ class _LandingScreenState extends State<LandingScreen> {
               const Spacer(flex: 1),
               InkWell(
                 onTap: () {
-                  //Register screen ruu usrene
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const RegisterScreen(),
-                    ),
-                  );
-                },
-                child: Container(
-                  height: 57,
-                  width: 290,
-                  decoration: BoxDecoration(
-                    color: Color(0xffD5F1FF),
-                    borderRadius: BorderRadius.circular(30.0),
-                  ),
-                  child: const Center(
-                    child: Text(
-                      'Sign Up',
-                      style: TextStyle(color: Colors.black),
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 12),
-              InkWell(
-                onTap: () {
-                  //Navigator
                   //Login screen ruu usrene
                   Navigator.push(
                     context,
@@ -77,13 +50,46 @@ class _LandingScreenState extends State<LandingScreen> {
                   height: 57,
                   width: 290,
                   decoration: BoxDecoration(
+                    color: Color(0xffD5F1FF),
+                    borderRadius: BorderRadius.circular(25.0),
+                  ),
+                  child: const Center(
+                    child: Text(
+                      'Log In',
+                      style: TextStyle(
+                          color: Color(0xff00AAFF),
+                          fontSize: 16,
+                          fontWeight: FontWeight.w400),
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 12),
+              InkWell(
+                onTap: () {
+                  //Navigator
+                  //Register screen ruu usrene
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const RegisterScreen(),
+                    ),
+                  );
+                },
+                child: Container(
+                  height: 57,
+                  width: 290,
+                  decoration: BoxDecoration(
                     color: Color(0xff00AAFF),
-                    borderRadius: BorderRadius.circular(30.0),
+                    borderRadius: BorderRadius.circular(25.0),
                   ),
                   child: Center(
                     child: Text(
-                      'Log In',
-                      style: TextStyle(color: Colors.black),
+                      'Sign Up',
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w400),
                     ),
                   ),
                 ),
