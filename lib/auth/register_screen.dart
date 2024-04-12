@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:glucose_monitoring/info_screen.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -8,6 +9,8 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
+  String username = '';
+  String password = '';
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,6 +33,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ),
                 const SizedBox(height: 60),
                 TextField(
+                  onChanged: (value) {
+                    username = value;
+                  },
                   decoration: InputDecoration(
                     prefixIcon: Icon(Icons.mail),
                     hintText: 'username',
@@ -39,6 +45,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ),
                 const SizedBox(height: 5),
                 TextField(
+                  onChanged: (value) {
+                    password = value;
+                  },
                   obscureText: true,
                   decoration: InputDecoration(
                     prefixIcon: Icon(Icons.lock),
@@ -49,6 +58,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ),
                 const SizedBox(height: 5),
                 TextField(
+                  onChanged: (value) {
+                    password = value;
+                  },
                   obscureText: true,
                   decoration: InputDecoration(
                     prefixIcon: Icon(Icons.lock),
@@ -59,6 +71,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ),
                 const SizedBox(height: 70),
                 InkWell(
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                InfoScreen(username: username)));
+                  },
                   child: Container(
                     height: 57,
                     decoration: BoxDecoration(
