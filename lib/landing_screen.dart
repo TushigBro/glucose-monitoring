@@ -15,13 +15,13 @@ class _LandingScreenState extends State<LandingScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Padding(
-        padding: const EdgeInsets.all(30.0),
+        padding: const EdgeInsets.all(40.0),
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const SizedBox(height: 60),
+              const SizedBox(height: 130),
               //Asset-aas zurag unshih
               Image.asset(
                 'assets/images/logo.png',
@@ -59,7 +59,7 @@ class _LandingScreenState extends State<LandingScreen> {
                       style: TextStyle(
                           color: Color(0xff00AAFF),
                           fontSize: 16,
-                          fontWeight: FontWeight.w400),
+                          fontWeight: FontWeight.w500),
                     ),
                   ),
                 ),
@@ -89,7 +89,7 @@ class _LandingScreenState extends State<LandingScreen> {
                       style: TextStyle(
                           color: Colors.white,
                           fontSize: 16,
-                          fontWeight: FontWeight.w400),
+                          fontWeight: FontWeight.w500),
                     ),
                   ),
                 ),
