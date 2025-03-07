@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Glucose Monitoring',
       theme: ThemeData(
-        scaffoldBackgroundColor: const Color(0xffF5FFFF),
+        scaffoldBackgroundColor: const Color(0xffFCFCFC),
         fontFamily: 'Manrope',
         useMaterial3: true,
       ),

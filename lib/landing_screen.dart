@@ -21,7 +21,7 @@ class _LandingScreenState extends State<LandingScreen> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const SizedBox(height: 130),
+              const SizedBox(height: 50),
               //Asset-aas zurag unshih
               Image.asset(
                 'assets/images/logo.png',
@@ -30,8 +30,14 @@ class _LandingScreenState extends State<LandingScreen> {
               ),
               const Text(
                 'gGauge',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.w500),
+                style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.w500,
+                    color: Color(0xff086A61)),
               ),
+              const Text(
+                  'for diabetic patients that who needs control over their glucose.',
+                  style: TextStyle(fontSize: 10, fontWeight: FontWeight.w200)),
               const SizedBox(height: 12),
 
               //Spacer -> Дараагийн widget хүртэлх боломжтой бүх зайг авч байгаа (Expanded)
@@ -50,42 +56,12 @@ class _LandingScreenState extends State<LandingScreen> {
                   height: 57,
                   width: 290,
                   decoration: BoxDecoration(
-                    color: Color(0xffD5F1FF),
+                    color: Color(0xFF18786F),
                     borderRadius: BorderRadius.circular(25.0),
                   ),
                   child: const Center(
                     child: Text(
-                      'Log In',
-                      style: TextStyle(
-                          color: Color(0xff00AAFF),
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500),
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 12),
-              InkWell(
-                onTap: () {
-                  //Navigator
-                  //Register screen ruu usrene
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const RegisterScreen(),
-                    ),
-                  );
-                },
-                child: Container(
-                  height: 57,
-                  width: 290,
-                  decoration: BoxDecoration(
-                    color: Color(0xff00AAFF),
-                    borderRadius: BorderRadius.circular(25.0),
-                  ),
-                  child: Center(
-                    child: Text(
-                      'Sign Up',
+                      'Get Started',
                       style: TextStyle(
                           color: Colors.white,
                           fontSize: 16,
