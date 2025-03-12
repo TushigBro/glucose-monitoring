@@ -35,9 +35,19 @@ class _LandingScreenState extends State<LandingScreen> {
                     fontWeight: FontWeight.w500,
                     color: Color(0xff086A61)),
               ),
-              const Text(
-                  'for diabetic patients that who needs control over their glucose.',
-                  style: TextStyle(fontSize: 10, fontWeight: FontWeight.w200)),
+              Text.rich(
+                textAlign: TextAlign.center,
+                const TextSpan(
+                  text:
+                      'for diabetic patients that who \n needs control over their \n',
+                  children: [
+                    TextSpan(
+                        text: 'glucose',
+                        style: TextStyle(fontWeight: FontWeight.bold)),
+                  ],
+                ),
+              ),
+
               const SizedBox(height: 12),
 
               //Spacer -> Дараагийн widget хүртэлх боломжтой бүх зайг авч байгаа (Expanded)
