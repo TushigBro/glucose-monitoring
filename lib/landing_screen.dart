@@ -21,17 +21,17 @@ class _LandingScreenState extends State<LandingScreen> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const SizedBox(height: 50),
+              const SizedBox(height: 100),
               //Asset-aas zurag unshih
               Image.asset(
                 'assets/images/logo.png',
-                height: 159,
-                width: 113,
+                height: 110,
+                width: 80,
               ),
               const Text(
                 'gGauge',
                 style: TextStyle(
-                    fontSize: 24,
+                    fontSize: 35,
                     fontWeight: FontWeight.w500,
                     color: Color(0xff086A61)),
               ),
@@ -40,9 +40,10 @@ class _LandingScreenState extends State<LandingScreen> {
                 const TextSpan(
                   text:
                       'for diabetic patients that who \n needs control over their \n',
+                  style: TextStyle(fontWeight: FontWeight.w100, fontSize: 15),
                   children: [
                     TextSpan(
-                        text: 'glucose',
+                        text: 'glucose.',
                         style: TextStyle(fontWeight: FontWeight.bold)),
                   ],
                 ),
@@ -63,11 +64,11 @@ class _LandingScreenState extends State<LandingScreen> {
                   );
                 },
                 child: Container(
-                  height: 57,
-                  width: 290,
+                  height: 50,
+                  width: 330,
                   decoration: BoxDecoration(
                     color: Color(0xFF18786F),
-                    borderRadius: BorderRadius.circular(25.0),
+                    borderRadius: BorderRadius.circular(28.0),
                   ),
                   child: const Center(
                     child: Text(
@@ -80,6 +81,7 @@ class _LandingScreenState extends State<LandingScreen> {
                   ),
                 ),
               ),
+              const SizedBox(height: 60),
             ],
           ),
         ),

@@ -30,8 +30,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     style: TextStyle(fontSize: 32, fontWeight: FontWeight.w400),
                   ),
                   const Text(
-                    'Please sign up to continue',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w200),
+                    "Let's fill in your details",
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w100),
                   ),
                   const SizedBox(height: 60),
                   TextField(
@@ -39,8 +39,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       username = value;
                     },
                     decoration: InputDecoration(
-                      prefixIcon: Icon(Icons.mail),
-                      hintText: 'username',
+                      hintText: 'Email address',
                       hintStyle: TextStyle(fontWeight: FontWeight.w200),
                       border: OutlineInputBorder(),
                     ),
@@ -52,7 +51,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     },
                     obscureText: true,
                     decoration: InputDecoration(
-                      prefixIcon: Icon(Icons.lock),
                       hintText: 'password',
                       hintStyle: TextStyle(fontWeight: FontWeight.w200),
                       border: OutlineInputBorder(),
@@ -65,8 +63,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     },
                     obscureText: true,
                     decoration: InputDecoration(
-                      prefixIcon: Icon(Icons.lock),
-                      hintText: 'Confirm your password',
+                      hintText: 'Confirm Password',
                       hintStyle: TextStyle(fontWeight: FontWeight.w200),
                       border: OutlineInputBorder(),
                     ),
@@ -83,7 +80,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     child: Container(
                       height: 57,
                       decoration: BoxDecoration(
-                        color: Color(0xff00AAFF),
+                        color: Color(0xFF18786F),
                         borderRadius: BorderRadius.circular(25.0),
                       ),
                       child: Center(
