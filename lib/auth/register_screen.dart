@@ -31,7 +31,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
                   const Text(
                     "Let's fill in your details",
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w100),
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w200),
                   ),
                   const SizedBox(height: 60),
                   TextField(
