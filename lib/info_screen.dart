@@ -5,6 +5,7 @@ import 'package:flutter/widgets.dart';
 import 'package:glucose_monitoring/auth/login_screen.dart';
 import 'package:glucose_monitoring/auth/register_screen.dart';
 import 'package:glucose_monitoring/main_screen.dart';
+import 'package:glucose_monitoring/auth/sign_up_screen3.dart';
 
 class InfoScreen extends StatefulWidget {
   const InfoScreen({super.key, required this.username});
