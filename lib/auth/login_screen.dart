@@ -75,6 +75,8 @@ class _LoginScreenState extends State<LoginScreen> {
                           hintText: 'Email address',
                           hintStyle: TextStyle(fontWeight: FontWeight.w200),
                           border: OutlineInputBorder(),
+                          focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Color(0xFF18786F))),
                         ),
                       ),
                       const SizedBox(height: 15),
@@ -86,7 +88,10 @@ class _LoginScreenState extends State<LoginScreen> {
                         decoration: InputDecoration(
                             hintText: 'Password',
                             hintStyle: TextStyle(fontWeight: FontWeight.w200),
-                            border: OutlineInputBorder()),
+                            border: OutlineInputBorder(),
+                            focusedBorder: OutlineInputBorder(
+                                borderSide:
+                                    BorderSide(color: Color(0xFF18786F)))),
                       ),
                       const SizedBox(height: 20),
                       GestureDetector(

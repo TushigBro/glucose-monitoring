@@ -13,6 +13,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
   String username = '';
   String password = '';
   final _formKey = GlobalKey<FormState>();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -59,10 +62,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         hintText: 'Email address',
                         hintStyle: TextStyle(fontWeight: FontWeight.w200),
                         border: OutlineInputBorder(),
+                        focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Color(0xFF18786F))),
                       ),
                     ),
                     const SizedBox(height: 5),
                     TextFormField(
+                      controller: _passwordController,
                       validator: (value) {
                         if (value == null || value.length < 8) {
                           return "Password should consist of 8 characters at least.";
@@ -79,14 +85,21 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         hintText: 'password',
                         hintStyle: TextStyle(fontWeight: FontWeight.w200),
                         border: OutlineInputBorder(),
+                        focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Color(0xFF18786F))),
                       ),
                     ),
                     const SizedBox(height: 5),
                     TextFormField(
+                      controller: _confirmPasswordController,
                       validator: (value) {
-                        if (value != password) {
-                          return "Password should be the same.";
+                        if (value == null || value.isEmpty) {
+                          return 'Please confirm your password';
                         }
+                        if (value != _passwordController.text) {
+                          return 'Passwords do not match';
+                        }
+                        return null;
                       },
                       onChanged: (value) {
                         password = value;
@@ -97,6 +110,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         hintText: 'Confirm Password',
                         hintStyle: TextStyle(fontWeight: FontWeight.w200),
                         border: OutlineInputBorder(),
+                        focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Color(0xFF18786F))),
                       ),
                     ),
                     const SizedBox(height: 70),

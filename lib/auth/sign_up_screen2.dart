@@ -53,6 +53,8 @@ class _SignUpScreen2State extends State<SignUpScreen2> {
                       hintText: 'Verification code...',
                       hintStyle: TextStyle(fontWeight: FontWeight.w200),
                       border: OutlineInputBorder(),
+                      focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Color(0xFF18786F))),
                     ),
                   ),
                   const SizedBox(height: 100),

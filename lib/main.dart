@@ -17,10 +17,11 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Glucose Monitoring',
       theme: ThemeData(
-        scaffoldBackgroundColor: const Color(0xffFCFCFC),
-        fontFamily: 'Manrope',
-        useMaterial3: true,
-      ),
+          scaffoldBackgroundColor: const Color(0xffFCFCFC),
+          fontFamily: 'Manrope',
+          useMaterial3: true,
+          textSelectionTheme:
+              TextSelectionThemeData(cursorColor: Color(0xFF18786F))),
       home: const LandingScreen(),
     );
   }

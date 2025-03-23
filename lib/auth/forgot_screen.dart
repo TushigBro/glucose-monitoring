@@ -49,6 +49,7 @@ class _ForgotScreenState extends State<ForgotScreen> {
                   ),
                   const SizedBox(height: 20),
                   TextField(
+                    cursorColor: Color(0xFF18786F),
                     onChanged: (value) {
                       email = value;
                     },
@@ -56,6 +57,8 @@ class _ForgotScreenState extends State<ForgotScreen> {
                       hintText: 'Email address',
                       hintStyle: TextStyle(fontWeight: FontWeight.w200),
                       border: OutlineInputBorder(),
+                      focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Color(0xFF18786F))),
                     ),
                   ),
                   const SizedBox(height: 20),
