@@ -6,6 +6,7 @@ import 'package:glucose_monitoring/auth/login_screen.dart';
 import 'package:glucose_monitoring/auth/register_screen.dart';
 import 'package:glucose_monitoring/main_screen.dart';
 import 'package:glucose_monitoring/auth/sign_up_screen3.dart';
+import 'package:country_picker/country_picker.dart';
 
 class InfoScreen extends StatefulWidget {
   const InfoScreen({super.key, required this.username});
@@ -17,34 +18,20 @@ class InfoScreen extends StatefulWidget {
 class _InfoScreenState extends State<InfoScreen> {
   final List<String> choices = ['Not Set', 'Male', 'Female', 'Other'];
   int chosenIndex = 0;
-  late TextEditingController controller;
-  String FirstName = ' ';
-  late TextEditingController controller2;
-  String LastName = ' ';
+  final List<String> choices1 = ['Not Set', 'Yes', 'No', 'Not Certain'];
+  int chosenIndex1 = 0;
   late TextEditingController controller3;
   int age = 0;
-  late TextEditingController controller4;
-  int weight = 0;
-  late TextEditingController controller5;
-  int height = 0;
-
   @override
   void initState() {
     super.initState();
-    controller = TextEditingController();
-    controller2 = TextEditingController();
+
     controller3 = TextEditingController();
-    controller4 = TextEditingController();
-    controller5 = TextEditingController();
   }
 
   @override
   void dispose() {
-    controller.dispose();
-    controller2.dispose();
     controller3.dispose();
-    controller4.dispose();
-    ;
     super.dispose();
   }
 
@@ -65,99 +52,23 @@ class _InfoScreenState extends State<InfoScreen> {
                   Center(
                     child: Text(
                       'Welcome ${widget.username}',
-                      style: TextStyle(fontSize: 32),
+                      style: TextStyle(fontSize: 32, color: Color(0xFF18786F)),
                     ),
                   ),
-                  const SizedBox(height: 35),
+                  const SizedBox(height: 15),
                   Center(
                     child: const Text(
-                      'please tell us about yourself',
+                      "Let's fill in your details.",
                       style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.w300),
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.w200),
                     ),
                   ),
                   const SizedBox(height: 100),
-                  Container(
-                    padding: EdgeInsets.all(18.0),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(45.0),
-                      color: Color(0xffD5F1FF),
-                    ),
+                  Form(
                     child: Column(
                       children: [
                         Row(
                           children: [
-                            const Text(
-                              'First Name',
-                              style: TextStyle(
-                                  fontSize: 20, fontWeight: FontWeight.w200),
-                            ),
-                            const Spacer(),
-                            Expanded(
-                              child: TextField(
-                                controller: controller,
-                                onSubmitted: (String value) {
-                                  setState(() {
-                                    FirstName = controller.text;
-                                  });
-                                },
-                                style: TextStyle(
-                                    fontSize: 20, fontWeight: FontWeight.w200),
-                                decoration: InputDecoration(
-                                  hintText: 'Not Set',
-                                  border: InputBorder.none,
-                                  hintStyle: TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.w200,
-                                      color: Colors.black,
-                                      decorationColor: Colors.black),
-                                ),
-                                textAlign: TextAlign.right,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 5),
-                        Row(
-                          children: [
-                            const Text(
-                              'Last Name',
-                              style: TextStyle(
-                                  fontSize: 20, fontWeight: FontWeight.w200),
-                            ),
-                            const Spacer(),
-                            Expanded(
-                              child: TextField(
-                                controller: controller2,
-                                onSubmitted: (String value) {
-                                  setState(() {
-                                    LastName = controller2.text;
-                                  });
-                                },
-                                style: TextStyle(
-                                    fontSize: 20, fontWeight: FontWeight.w200),
-                                decoration: InputDecoration(
-                                  hintText: 'Not Set',
-                                  border: InputBorder.none,
-                                  hintStyle: TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.w200,
-                                      color: Colors.black,
-                                      decorationColor: Colors.black),
-                                ),
-                                textAlign: TextAlign.right,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 5),
-                        Row(
-                          children: [
-                            const Text(
-                              'Age',
-                              style: TextStyle(
-                                  fontSize: 20, fontWeight: FontWeight.w200),
-                            ),
                             const Spacer(),
                             Expanded(
                               child: TextField(
@@ -226,76 +137,44 @@ class _InfoScreenState extends State<InfoScreen> {
                             )
                           ],
                         ),
-                        const SizedBox(height: 5),
+                        const SizedBox(height: 8),
                         Row(
                           children: [
                             const Text(
-                              'Weight',
+                              'Pregnancy',
                               style: TextStyle(
                                   fontSize: 20, fontWeight: FontWeight.w200),
                             ),
                             const Spacer(),
-                            Expanded(
-                              child: TextField(
-                                controller: controller4,
-                                onSubmitted: (String value) {
-                                  setState(() {
-                                    weight = controller4.hashCode;
-                                  });
-                                },
-                                keyboardType: TextInputType.number,
-                                inputFormatters: <TextInputFormatter>[
-                                  FilteringTextInputFormatter.digitsOnly,
-                                ],
+                            InkWell(
+                              child: Text(
+                                choices1[chosenIndex1],
                                 style: TextStyle(
                                     fontSize: 20, fontWeight: FontWeight.w200),
-                                decoration: InputDecoration(
-                                  hintText: 'Not Set',
-                                  border: InputBorder.none,
-                                  hintStyle: TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.w200,
-                                      color: Colors.black),
-                                ),
-                                textAlign: TextAlign.right,
                               ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 5),
-                        Row(
-                          children: [
-                            const Text(
-                              'Height',
-                              style: TextStyle(
-                                  fontSize: 20, fontWeight: FontWeight.w200),
-                            ),
-                            const Spacer(),
-                            Expanded(
-                              child: TextField(
-                                controller: controller5,
-                                onSubmitted: (String value) {
-                                  setState(() {
-                                    height = controller5.hashCode;
-                                  });
-                                },
-                                keyboardType: TextInputType.number,
-                                inputFormatters: <TextInputFormatter>[
-                                  FilteringTextInputFormatter.digitsOnly,
-                                ],
-                                style: TextStyle(
-                                    fontSize: 20, fontWeight: FontWeight.w200),
-                                decoration: InputDecoration(
-                                  hintText: 'Not Set',
-                                  border: InputBorder.none,
-                                  hintStyle: TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.w200,
-                                      color: Colors.black),
+                              onTap: () => _showDialog(
+                                CupertinoPicker(
+                                  onSelectedItemChanged: (int value) {
+                                    setState(() {
+                                      chosenIndex1 = value;
+                                    });
+                                  },
+                                  children: List<Widget>.generate(
+                                      choices1.length, (index) {
+                                    return Center(
+                                      child: Text(choices1[index],
+                                          style: TextStyle(
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.w200)),
+                                    );
+                                  }),
+                                  magnification: 1.22,
+                                  squeeze: 1.2,
+                                  useMagnifier: true,
+                                  itemExtent: 64,
                                 ),
-                                textAlign: TextAlign.right,
                               ),
-                            ),
+                            )
                           ],
                         ),
                       ],
@@ -314,12 +193,12 @@ class _InfoScreenState extends State<InfoScreen> {
                     child: Container(
                       height: 57,
                       decoration: BoxDecoration(
-                        color: Color(0xff00AAFF),
+                        color: Color(0xFF18786F),
                         borderRadius: BorderRadius.circular(25.0),
                       ),
                       child: Center(
                         child: Text(
-                          "Let's get started",
+                          "Continue",
                           style: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.w400,
