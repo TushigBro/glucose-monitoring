@@ -10,6 +10,8 @@ dependencies:
     sdk: flutter
   cupertino_icons: ^1.0.2
   country_picker: ^2.0.27
+  lottie: ^2.3.2
+  audioplayers: ^5.2.1
   persistent_bottom_nav_bar: ^6.2.1
 
 dev_dependencies:
@@ -33,3 +35,5 @@ flutter:
         - asset: assets/fonts/Manrope-SemiBold.ttf
   assets:
     - assets/images/
+    - assets/animations/success.json
+    - assets/sounds/success.mp3

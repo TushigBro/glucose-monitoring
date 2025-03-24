@@ -4,6 +4,7 @@ import 'package:glucose_monitoring/auth/login_screen.dart';
 import 'package:glucose_monitoring/auth/register_screen.dart';
 import 'package:glucose_monitoring/home_screen.dart';
 import 'package:glucose_monitoring/profile_screen.dart';
+import 'package:glucose_monitoring/chat_screen.dart';
 import 'package:persistent_bottom_nav_bar/persistent_bottom_nav_bar.dart';
 
 class MainScreen extends StatefulWidget {
@@ -25,6 +26,7 @@ class _MainScreenState extends State<MainScreen> {
     return [
       Homescreen(),
       ProfileScreen(),
+      MyChatScreen(),
     ];
   }
 
@@ -33,13 +35,19 @@ class _MainScreenState extends State<MainScreen> {
       PersistentBottomNavBarItem(
         icon: Icon(CupertinoIcons.home),
         title: ("Home"),
-        activeColorPrimary: CupertinoColors.activeBlue,
+        activeColorPrimary: CupertinoColors.activeGreen,
+        inactiveColorPrimary: CupertinoColors.systemGrey,
+      ),
+      PersistentBottomNavBarItem(
+        icon: Icon(CupertinoIcons.chat_bubble),
+        title: ("Chat"),
+        activeColorPrimary: CupertinoColors.activeGreen,
         inactiveColorPrimary: CupertinoColors.systemGrey,
       ),
       PersistentBottomNavBarItem(
         icon: Icon(CupertinoIcons.profile_circled),
         title: ("Profile"),
-        activeColorPrimary: CupertinoColors.activeBlue,
+        activeColorPrimary: CupertinoColors.activeGreen,
         inactiveColorPrimary: CupertinoColors.systemGrey,
       ),
     ];
