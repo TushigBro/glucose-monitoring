@@ -16,17 +16,18 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   late PersistentTabController _controller;
+
   @override
   void initState() {
-    _controller = PersistentTabController(initialIndex: 0);
     super.initState();
+    _controller = PersistentTabController(initialIndex: 0);
   }
 
   List<Widget> _buildScreens() {
     return [
       Homescreen(),
-      ProfileScreen(),
       MyChatScreen(),
+      ProfileScreen(),
     ];
   }
 
@@ -55,21 +56,51 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return PersistentTabView(
-      context,
-      controller: _controller,
-      screens: _buildScreens(),
-      items: _navBarsItems(),
-      confineToSafeArea: true,
+    return Scaffold(
       backgroundColor: Colors.white,
-      handleAndroidBackButtonPress: true,
-      resizeToAvoidBottomInset: true,
-      stateManagement: true,
-      decoration: NavBarDecoration(
-        borderRadius: BorderRadius.circular(10.0),
-        colorBehindNavBar: Colors.white,
+      body: SafeArea(
+        child: Column(
+          children: [
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16),
+              child: Row(
+                children: [
+                  Text(
+                    'gGauge',
+                    style: TextStyle(
+                      fontSize: 32,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  Spacer(),
+                  CircleAvatar(
+                    radius: 20,
+                  ),
+                ],
+              ),
+            ),
+            Expanded(
+              child: PersistentTabView(
+                context,
+                controller: _controller,
+                screens: _buildScreens(),
+                items: _navBarsItems(),
+                confineToSafeArea: true,
+                backgroundColor: Colors.white,
+                handleAndroidBackButtonPress: true,
+                resizeToAvoidBottomInset: true,
+                stateManagement: true,
+                decoration: NavBarDecoration(
+                  borderRadius: BorderRadius.circular(10.0),
+                  colorBehindNavBar: Colors.white,
+                ),
+                navBarStyle: NavBarStyle.style3,
+              ),
+            ),
+          ],
+        ),
       ),
-      navBarStyle: NavBarStyle.style3,
     );
   }
 }
