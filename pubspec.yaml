@@ -13,12 +13,14 @@ dependencies:
   lottie: ^2.3.2
   audioplayers: ^5.2.1
   persistent_bottom_nav_bar: ^6.2.1
+  cached_network_image: ^3.4.1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
   flutter_lints: ^2.0.0
+  fl_chart: ^0.66.2
 
 
 flutter:
