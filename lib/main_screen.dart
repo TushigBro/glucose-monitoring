@@ -6,6 +6,7 @@ import 'package:glucose_monitoring/home_screen.dart';
 import 'package:glucose_monitoring/profile_screen.dart';
 import 'package:glucose_monitoring/chat_screen.dart';
 import 'package:persistent_bottom_nav_bar/persistent_bottom_nav_bar.dart';
+import 'package:intl/intl.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -25,10 +26,54 @@ class _MainScreenState extends State<MainScreen> {
 
   List<Widget> _buildScreens() {
     return [
-      Homescreen(),
-      MyChatScreen(),
+      Column(
+        children: [
+          _buildHeader(),
+          Expanded(child: Homescreen()),
+        ],
+      ),
+      Column(
+        children: [
+          _buildHeader(),
+          Expanded(child: MyChatScreen()),
+        ],
+      ),
       ProfileScreen(),
     ];
+  }
+
+  Widget _buildHeader() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'gGauge',
+                style: TextStyle(
+                  fontSize: 32,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              CircleAvatar(
+                radius: 20,
+              ),
+            ],
+          ),
+          SizedBox(height: 4),
+          Text(
+            DateFormat('MMMM d, yyyy').format(DateTime.now()),
+            style: TextStyle(
+              fontSize: 16,
+              color: Colors.grey[600],
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   List<PersistentBottomNavBarItem> _navBarsItems() {
@@ -59,46 +104,21 @@ class _MainScreenState extends State<MainScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
-        child: Column(
-          children: [
-            Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16),
-              child: Row(
-                children: [
-                  Text(
-                    'gGauge',
-                    style: TextStyle(
-                      fontSize: 32,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  Spacer(),
-                  CircleAvatar(
-                    radius: 20,
-                  ),
-                ],
-              ),
-            ),
-            Expanded(
-              child: PersistentTabView(
-                context,
-                controller: _controller,
-                screens: _buildScreens(),
-                items: _navBarsItems(),
-                confineToSafeArea: true,
-                backgroundColor: Colors.white,
-                handleAndroidBackButtonPress: true,
-                resizeToAvoidBottomInset: true,
-                stateManagement: true,
-                decoration: NavBarDecoration(
-                  borderRadius: BorderRadius.circular(10.0),
-                  colorBehindNavBar: Colors.white,
-                ),
-                navBarStyle: NavBarStyle.style3,
-              ),
-            ),
-          ],
+        child: PersistentTabView(
+          context,
+          controller: _controller,
+          screens: _buildScreens(),
+          items: _navBarsItems(),
+          confineToSafeArea: true,
+          backgroundColor: Colors.white,
+          handleAndroidBackButtonPress: true,
+          resizeToAvoidBottomInset: true,
+          stateManagement: true,
+          decoration: NavBarDecoration(
+            borderRadius: BorderRadius.circular(10.0),
+            colorBehindNavBar: Colors.white,
+          ),
+          navBarStyle: NavBarStyle.style3,
         ),
       ),
     );
