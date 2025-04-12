@@ -58,8 +58,14 @@ class _MainScreenState extends State<MainScreen> {
                   fontWeight: FontWeight.w500,
                 ),
               ),
-              CircleAvatar(
-                radius: 20,
+              GestureDetector(
+                onTap: () {
+                  _controller.jumpToTab(2);
+                },
+                child: CircleAvatar(
+                  radius: 20,
+                  child: Icon(Icons.person),
+                ),
               ),
             ],
           ),
