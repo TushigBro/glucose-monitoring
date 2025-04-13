@@ -43,41 +43,45 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   Widget _buildHeader() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'gGauge',
-                style: TextStyle(
-                  fontSize: 32,
-                  fontWeight: FontWeight.w500,
+    return Container(
+      color: Colors.white,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'gGauge',
+                  style: TextStyle(
+                    fontSize: 32,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
-              ),
-              GestureDetector(
-                onTap: () {
-                  _controller.jumpToTab(2);
-                },
-                child: CircleAvatar(
-                  radius: 20,
-                  child: Icon(Icons.person),
+                GestureDetector(
+                  onTap: () {
+                    _controller.jumpToTab(2);
+                  },
+                  child: CircleAvatar(
+                    radius: 20,
+                    backgroundColor: Colors.grey.shade300,
+                    child: Icon(Icons.person),
+                  ),
                 ),
-              ),
-            ],
-          ),
-          SizedBox(height: 4),
-          Text(
-            DateFormat('MMMM d, yyyy').format(DateTime.now()),
-            style: TextStyle(
-              fontSize: 16,
-              color: Colors.grey[600],
+              ],
             ),
-          ),
-        ],
+            SizedBox(height: 4),
+            Text(
+              DateFormat('MMMM d, yyyy').format(DateTime.now()),
+              style: TextStyle(
+                fontSize: 16,
+                color: Colors.grey[600],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -87,19 +91,19 @@ class _MainScreenState extends State<MainScreen> {
       PersistentBottomNavBarItem(
         icon: Icon(CupertinoIcons.home),
         title: ("Home"),
-        activeColorPrimary: CupertinoColors.activeGreen,
+        activeColorPrimary: Color(0xff086A61),
         inactiveColorPrimary: CupertinoColors.systemGrey,
       ),
       PersistentBottomNavBarItem(
         icon: Icon(CupertinoIcons.chat_bubble),
         title: ("Chat"),
-        activeColorPrimary: CupertinoColors.activeGreen,
+        activeColorPrimary: Color(0xff086A61),
         inactiveColorPrimary: CupertinoColors.systemGrey,
       ),
       PersistentBottomNavBarItem(
         icon: Icon(CupertinoIcons.profile_circled),
         title: ("Profile"),
-        activeColorPrimary: CupertinoColors.activeGreen,
+        activeColorPrimary: Color(0xff086A61),
         inactiveColorPrimary: CupertinoColors.systemGrey,
       ),
     ];
