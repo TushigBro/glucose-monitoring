@@ -21,10 +21,8 @@ class _ChatScreenState extends State<MyChatScreen> {
       _controller.clear();
     });
 
-    // Send to backend
     final response = await http.post(
-      Uri.parse(
-          'http://undergraduate-project-ry8h.onrender.com'), // Update with your API endpoint
+      Uri.parse('http://undergraduate-project-ry8h.onrender.com'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({'message': message}),
     );
@@ -48,6 +46,42 @@ class _ChatScreenState extends State<MyChatScreen> {
       body: SafeArea(
         child: Column(
           children: [
+            // Top content
+            Column(
+              children: const [
+                SizedBox(height: 90),
+                Image(
+                  image: AssetImage('assets/images/logo.png'),
+                  height: 30,
+                  width: 41,
+                ),
+                SizedBox(height: 20),
+                Text(
+                  'Hello User!',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(height: 14),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 36.0),
+                  child: Text(
+                    "I’m gGauge chatbot. I’m here to help you 24/7 to answer your most of the  health considerations.",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w400,
+                      height: 1.5,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+
+            const SizedBox(height: 20),
+
+            // Chat messages
             Expanded(
               child: ListView.builder(
                 padding: const EdgeInsets.all(16),
@@ -62,9 +96,11 @@ class _ChatScreenState extends State<MyChatScreen> {
                       margin: const EdgeInsets.symmetric(vertical: 4),
                       padding: const EdgeInsets.all(12),
                       constraints: BoxConstraints(
-                          maxWidth: MediaQuery.of(context).size.width * 0.7),
+                        maxWidth: MediaQuery.of(context).size.width * 0.7,
+                      ),
                       decoration: BoxDecoration(
-                        color: isUser ? Color(0xff10D0BF) : Colors.grey[300],
+                        color:
+                            isUser ? const Color(0xff10D0BF) : Colors.grey[300],
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Text(msg['text'] ?? ''),
@@ -74,7 +110,7 @@ class _ChatScreenState extends State<MyChatScreen> {
               ),
             ),
 
-            // Chat Input
+            // Chat input
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Container(
