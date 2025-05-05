@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:glucose_monitoring/api_wrapper.dart';
 import 'package:glucose_monitoring/auth/forgot_screen.dart';
 import 'package:glucose_monitoring/info_screen.dart';
 import 'package:glucose_monitoring/main_screen.dart';
@@ -113,6 +114,8 @@ class _LoginScreenState extends State<LoginScreen> {
                       InkWell(
                         onTap: () {
                           if (_formKey.currentState!.validate()) {
+                            //handleApiCall(
+                            //apiCall: () {}, loadingMessage: "Loading..");
                             if (username == 'admin' && password == 'admin') {
                               Navigator.push(
                                 context,

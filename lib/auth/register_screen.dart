@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:glucose_monitoring/auth/sign_up_screen2.dart';
+import 'package:glucose_monitoring/auth/sign_up_screen3.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -118,7 +119,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       if (_formKey.currentState!.validate()) {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (_) => SignUpScreen2()),
+                          MaterialPageRoute(
+                              builder: (_) => SignUpScreen3(
+                                    email: _emailController.text,
+                                    password: _passwordController.text,
+                                  )),
                         );
                       }
                     },

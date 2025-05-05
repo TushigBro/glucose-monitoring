@@ -1,11 +1,23 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get_navigation/src/extension_navigation.dart';
+import 'package:glucose_monitoring/api_wrapper.dart';
+import 'package:glucose_monitoring/auth_service.dart';
 import 'package:glucose_monitoring/main_screen.dart';
 import 'package:country_picker/country_picker.dart';
 
 class InfoScreen extends StatefulWidget {
-  const InfoScreen({super.key, required this.username});
-  final String username;
+  const InfoScreen(
+      {super.key,
+      required this.firstName,
+      required this.lastName,
+      required this.email,
+      required this.password});
+  final String firstName;
+  final String lastName;
+  final String email;
+  final String password;
 
   @override
   State<InfoScreen> createState() => _InfoScreenState();
@@ -25,7 +37,7 @@ class _InfoScreenState extends State<InfoScreen> {
 
   bool isConfirmed = false; // Controls the animation
 
-  void _validateAndContinue() {
+  void _validateAndContinue() async {
     setState(() {
       ageError = selectedAge == 0 ? "Please select your age" : null;
       sexError = selectedSexIndex == 0 ? "Please select your sex" : null;
@@ -41,7 +53,17 @@ class _InfoScreenState extends State<InfoScreen> {
         pregnancyError == null &&
         nationalityError == null) {
       setState(() => isConfirmed = true); // Show animation
-
+      Response? response = await handleApiCall(
+        apiCall: () => AuthService().register(
+            firstName: widget.firstName,
+            lastName: widget.lastName,
+            email: widget.email,
+            password: widget.password),
+        loadingMessage: 'Уншиж байна...',
+      );
+      if (response != null) {
+        print(response.data);
+      }
       Future.delayed(Duration(seconds: 1), () {
         Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (context) => MainScreen()));
@@ -94,7 +116,6 @@ class _InfoScreenState extends State<InfoScreen> {
 
   void _showNationalityPicker() {
     showCountryPicker(
-      
       context: context,
       showWorldWide: false,
       onSelect: (Country country) {
@@ -121,7 +142,7 @@ class _InfoScreenState extends State<InfoScreen> {
                   const SizedBox(height: 80),
                   Center(
                     child: Text(
-                      'Welcome, ${widget.username}',
+                      'Welcome, ${widget.firstName}',
                       style: TextStyle(fontSize: 32, color: Color(0xFF18786F)),
                     ),
                   ),

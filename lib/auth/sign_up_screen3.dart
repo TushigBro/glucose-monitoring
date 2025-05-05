@@ -3,8 +3,9 @@ import 'package:glucose_monitoring/auth/register_screen.dart';
 import 'package:glucose_monitoring/info_screen.dart';
 
 class SignUpScreen3 extends StatefulWidget {
-  const SignUpScreen3({super.key});
-
+  const SignUpScreen3({super.key, required this.email, required this.password});
+  final String email;
+  final String password;
   @override
   State<SignUpScreen3> createState() => _SignUpScreen3State();
 }
@@ -108,8 +109,11 @@ class _SignUpScreen3State extends State<SignUpScreen3> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) =>
-                                InfoScreen(username: first_name),
+                            builder: (context) => InfoScreen(
+                                firstName: first_name,
+                                lastName: last_name,
+                                password: widget.password,
+                                email: widget.email),
                           ),
                         );
                       },
