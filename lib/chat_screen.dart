@@ -47,8 +47,8 @@ class _ChatScreenState extends State<MyChatScreen> {
         child: Column(
           children: [
             // Top content
-            Column(
-              children: const [
+            const Column(
+              children: [
                 SizedBox(height: 90),
                 Image(
                   image: AssetImage('assets/images/logo.png'),

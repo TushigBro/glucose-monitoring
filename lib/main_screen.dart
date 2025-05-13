@@ -29,16 +29,16 @@ class _MainScreenState extends State<MainScreen> {
       Column(
         children: [
           _buildHeader(),
-          Expanded(child: Homescreen()),
+          const Expanded(child: Homescreen()),
         ],
       ),
       Column(
         children: [
           _buildHeader(),
-          Expanded(child: MyChatScreen()),
+          const Expanded(child: MyChatScreen()),
         ],
       ),
-      ProfileScreen(),
+      const ProfileScreen(),
     ];
   }
 
@@ -53,7 +53,7 @@ class _MainScreenState extends State<MainScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
+                const Text(
                   'gGauge',
                   style: TextStyle(
                     fontSize: 32,
@@ -67,12 +67,12 @@ class _MainScreenState extends State<MainScreen> {
                   child: CircleAvatar(
                     radius: 20,
                     backgroundColor: Colors.grey.shade300,
-                    child: Icon(Icons.person),
+                    child: const Icon(Icons.person),
                   ),
                 ),
               ],
             ),
-            SizedBox(height: 4),
+            const SizedBox(height: 4),
             Text(
               DateFormat('MMMM d, yyyy').format(DateTime.now()),
               style: TextStyle(
@@ -89,21 +89,21 @@ class _MainScreenState extends State<MainScreen> {
   List<PersistentBottomNavBarItem> _navBarsItems() {
     return [
       PersistentBottomNavBarItem(
-        icon: Icon(CupertinoIcons.home),
+        icon: const Icon(CupertinoIcons.home),
         title: ("Home"),
-        activeColorPrimary: Color(0xff086A61),
+        activeColorPrimary: const Color(0xff086A61),
         inactiveColorPrimary: CupertinoColors.systemGrey,
       ),
       PersistentBottomNavBarItem(
-        icon: Icon(CupertinoIcons.chat_bubble),
+        icon: const Icon(CupertinoIcons.chat_bubble),
         title: ("Chat"),
-        activeColorPrimary: Color(0xff086A61),
+        activeColorPrimary: const Color(0xff086A61),
         inactiveColorPrimary: CupertinoColors.systemGrey,
       ),
       PersistentBottomNavBarItem(
-        icon: Icon(CupertinoIcons.profile_circled),
+        icon: const Icon(CupertinoIcons.profile_circled),
         title: ("Profile"),
-        activeColorPrimary: Color(0xff086A61),
+        activeColorPrimary: const Color(0xff086A61),
         inactiveColorPrimary: CupertinoColors.systemGrey,
       ),
     ];

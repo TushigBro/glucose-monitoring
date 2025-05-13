@@ -39,16 +39,16 @@ class _HomescreenState extends State<Homescreen> {
       child: Scaffold(
         backgroundColor: Colors.white,
         body: SingleChildScrollView(
-          padding: EdgeInsets.symmetric(horizontal: 14.0, vertical: 20),
+          padding: const EdgeInsets.symmetric(horizontal: 14.0, vertical: 20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Glucose Info Card
               Container(
-                padding: EdgeInsets.all(14.0),
+                padding: const EdgeInsets.all(14.0),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(16.0),
-                  gradient: LinearGradient(
+                  gradient: const LinearGradient(
                     colors: [Color(0xff17B5A6), Color(0xffD8EFEE)],
                   ),
                 ),
@@ -58,30 +58,31 @@ class _HomescreenState extends State<Homescreen> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Current Glucose',
+                        const Text('Current Glucose',
                             style: TextStyle(
                                 fontSize: 14, fontWeight: FontWeight.w200)),
                         Text('$lastMeasure mg/dL',
-                            style: TextStyle(
+                            style: const TextStyle(
                                 fontSize: 36, fontWeight: FontWeight.w600)),
-                        Text('Last Measured:',
+                        const Text('Last Measured:',
                             style: TextStyle(
                                 fontSize: 14, fontWeight: FontWeight.w200)),
-                        Text('1 hour ago',
+                        const Text('1 hour ago',
                             style: TextStyle(
                                 fontSize: 14, fontWeight: FontWeight.w200)),
                       ],
                     ),
-                    Spacer(),
+                    const Spacer(),
                     Container(
                       height: 93,
                       width: 93,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(50),
-                        border: Border.all(width: 5, color: Color(0xff22C55E)),
+                        border: Border.all(
+                            width: 5, color: const Color(0xff22C55E)),
                         color: Colors.transparent,
                       ),
-                      child: Center(
+                      child: const Center(
                         child: Text(
                           'Good',
                           style: TextStyle(
@@ -94,10 +95,10 @@ class _HomescreenState extends State<Homescreen> {
                   ],
                 ),
               ),
-              SizedBox(height: 35),
+              const SizedBox(height: 35),
 
               // Chart
-              Container(
+              SizedBox(
                 height: 227,
                 width: double.infinity,
                 child: LineChart(
@@ -113,7 +114,7 @@ class _HomescreenState extends State<Homescreen> {
                           getTitlesWidget: (value, meta) => Padding(
                             padding: const EdgeInsets.only(top: 8.0),
                             child: Text('${value.toInt()}:00',
-                                style: TextStyle(fontSize: 12)),
+                                style: const TextStyle(fontSize: 12)),
                           ),
                           reservedSize: 30,
                         ),
@@ -126,10 +127,10 @@ class _HomescreenState extends State<Homescreen> {
                           reservedSize: 30,
                         ),
                       ),
-                      topTitles:
-                          AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                      rightTitles:
-                          AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                      topTitles: const AxisTitles(
+                          sideTitles: SideTitles(showTitles: false)),
+                      rightTitles: const AxisTitles(
+                          sideTitles: SideTitles(showTitles: false)),
                     ),
                     gridData: FlGridData(
                       show: true,
@@ -196,14 +197,14 @@ class _HomescreenState extends State<Homescreen> {
                 ),
               ),
 
-              SizedBox(height: 30),
+              const SizedBox(height: 30),
 
               // Food Recommendations Title
-              Text(
+              const Text(
                 "Recommended Foods",
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
-              SizedBox(height: 12),
+              const SizedBox(height: 12),
 
               // Scrollable Horizontal List
               SizedBox(
@@ -223,7 +224,7 @@ class _HomescreenState extends State<Homescreen> {
                   },
                 ),
               ),
-              SizedBox(height: 30),
+              const SizedBox(height: 30),
             ],
           ),
         ),
@@ -234,7 +235,7 @@ class _HomescreenState extends State<Homescreen> {
   void _showFoodDetails(BuildContext context, FoodRecommendation food) {
     showModalBottomSheet(
       context: context,
-      shape: RoundedRectangleBorder(
+      shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
       builder: (_) {
         return Padding(
@@ -251,24 +252,27 @@ class _HomescreenState extends State<Homescreen> {
                 errorWidget: (context, url, error) => Container(
                   height: 150,
                   color: Colors.grey[200],
-                  child: Icon(Icons.broken_image, size: 48, color: Colors.grey),
+                  child: const Icon(Icons.broken_image,
+                      size: 48, color: Colors.grey),
                 ),
               ),
-              SizedBox(height: 12),
+              const SizedBox(height: 12),
               Text(food.name,
-                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
-              SizedBox(height: 8),
+                  style: const TextStyle(
+                      fontSize: 22, fontWeight: FontWeight.bold)),
+              const SizedBox(height: 8),
               Text(food.description,
                   style: TextStyle(color: Colors.grey[700], fontSize: 16)),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () => Navigator.pop(context),
-                child: Text("Close"),
                 style: ElevatedButton.styleFrom(
-                  shape: StadiumBorder(),
-                  backgroundColor: Color(0xff17B5A6),
-                  padding: EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+                  shape: const StadiumBorder(),
+                  backgroundColor: const Color(0xff17B5A6),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
                 ),
+                child: Text("Close"),
               ),
             ],
           ),
@@ -304,7 +308,7 @@ class FoodCard extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
         color: Colors.white,
-        boxShadow: [
+        boxShadow: const [
           BoxShadow(
             color: Colors.black12,
             blurRadius: 4,
@@ -316,7 +320,7 @@ class FoodCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           ClipRRect(
-            borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
             child: CachedNetworkImage(
               imageUrl: food.imageUrl,
               height: 80,
@@ -327,7 +331,8 @@ class FoodCard extends StatelessWidget {
               errorWidget: (context, url, error) => Container(
                 height: 80,
                 color: Colors.grey[200],
-                child: Icon(Icons.broken_image, size: 32, color: Colors.grey),
+                child: const Icon(Icons.broken_image,
+                    size: 32, color: Colors.grey),
               ),
             ),
           ),
@@ -335,7 +340,7 @@ class FoodCard extends StatelessWidget {
             padding: const EdgeInsets.all(8.0),
             child: Text(
               food.name,
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
             ),
           ),
         ],

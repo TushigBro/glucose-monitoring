@@ -61,7 +61,7 @@ class _SignUpScreen3State extends State<SignUpScreen3> {
                         _formKey.currentState!.validate();
                       },
                       obscureText: false,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                           hintText: 'First name',
                           hintStyle: TextStyle(fontWeight: FontWeight.w200),
                           border: OutlineInputBorder(),
@@ -87,7 +87,7 @@ class _SignUpScreen3State extends State<SignUpScreen3> {
                         _formKey.currentState!.validate();
                       },
                       obscureText: false,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                           hintText: 'Last name',
                           hintStyle: TextStyle(fontWeight: FontWeight.w200),
                           border: OutlineInputBorder(),
@@ -96,8 +96,8 @@ class _SignUpScreen3State extends State<SignUpScreen3> {
                                   BorderSide(color: Color(0xFF18786F)))),
                     ),
                     const SizedBox(height: 15),
-                    Center(
-                      child: const Text(
+                    const Center(
+                      child: Text(
                         'Please fill your real information.',
                         style: TextStyle(
                             fontSize: 16, fontWeight: FontWeight.w200),
@@ -120,10 +120,10 @@ class _SignUpScreen3State extends State<SignUpScreen3> {
                       child: Container(
                         height: 57,
                         decoration: BoxDecoration(
-                          color: Color(0xFF18786F),
+                          color: const Color(0xFF18786F),
                           borderRadius: BorderRadius.circular(25.0),
                         ),
-                        child: Center(
+                        child: const Center(
                           child: Text(
                             'Continue',
                             style: TextStyle(

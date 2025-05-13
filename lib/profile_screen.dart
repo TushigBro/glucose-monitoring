@@ -23,18 +23,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
           children: [
             const SizedBox(height: 30),
 
-            Stack(
+            const Stack(
               alignment: Alignment.bottomRight,
               children: [
-                const CircleAvatar(
+                CircleAvatar(
                   radius: 50,
                   backgroundImage: AssetImage('assets/images/user.jpg'),
                 ),
                 CircleAvatar(
                   radius: 18,
                   backgroundColor: primaryColor,
-                  child: const Icon(Icons.camera_alt,
-                      color: Colors.white, size: 18),
+                  child: Icon(Icons.camera_alt, color: Colors.white, size: 18),
                 ),
               ],
             ),
@@ -44,12 +43,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
             // Name and Email
             Text(
               _dataController.userData['firstName'],
-              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+              style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 4),
             Text(
               _dataController.userData['email'],
-              style: TextStyle(fontSize: 14, color: Colors.grey),
+              style: const TextStyle(fontSize: 14, color: Colors.grey),
             ),
 
             const SizedBox(height: 16),

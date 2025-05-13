@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
           fontFamily: 'Manrope',
           useMaterial3: true,
           textSelectionTheme:
-              TextSelectionThemeData(cursorColor: Color(0xFF18786F))),
+              const TextSelectionThemeData(cursorColor: Color(0xFF18786F))),
       home: const LandingScreen(),
     );
   }

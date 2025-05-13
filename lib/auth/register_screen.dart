@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:glucose_monitoring/auth/sign_up_screen2.dart';
 import 'package:glucose_monitoring/auth/sign_up_screen3.dart';
 
 class RegisterScreen extends StatefulWidget {

@@ -35,9 +35,9 @@ class _LandingScreenState extends State<LandingScreen> {
                     fontWeight: FontWeight.w500,
                     color: Color(0xff086A61)),
               ),
-              Text.rich(
+              const Text.rich(
                 textAlign: TextAlign.center,
-                const TextSpan(
+                TextSpan(
                   text:
                       'for diabetic patients that who \n needs control over their \n',
                   style: TextStyle(fontWeight: FontWeight.w100, fontSize: 15),
@@ -67,7 +67,7 @@ class _LandingScreenState extends State<LandingScreen> {
                   height: 50,
                   width: 330,
                   decoration: BoxDecoration(
-                    color: Color(0xFF18786F),
+                    color: const Color(0xFF18786F),
                     borderRadius: BorderRadius.circular(28.0),
                   ),
                   child: const Center(

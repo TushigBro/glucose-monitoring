@@ -46,15 +46,15 @@ class _LoginScreenState extends State<LoginScreen> {
                           width: 80,
                         ),
                       ),
-                      Center(
-                        child: const Text(
+                      const Center(
+                        child: Text(
                           'gGauge',
                           style:
                               TextStyle(fontSize: 32, color: Color(0xff086A61)),
                         ),
                       ),
-                      Center(
-                        child: const Text(
+                      const Center(
+                        child: Text(
                           "Let's be healthy",
                           style: TextStyle(
                               fontSize: 16, fontWeight: FontWeight.w200),
@@ -76,7 +76,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           }
                           return null;
                         },
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           hintText: 'Email address',
                           hintStyle: TextStyle(fontWeight: FontWeight.w200),
                           border: OutlineInputBorder(),
@@ -90,7 +90,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           password = value;
                         },
                         obscureText: true,
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                             hintText: 'Password',
                             hintStyle: TextStyle(fontWeight: FontWeight.w200),
                             border: OutlineInputBorder(),
@@ -108,7 +108,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                           );
                         },
-                        child: Center(
+                        child: const Center(
                           child: Text(
                             'Forgot your password?',
                           ),
@@ -123,7 +123,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 email: username,
                                 password: password,
                               );
-                               DataController dataController =
+                              DataController dataController =
                                   Get.put(DataController());
                               dataController.setUserData(response.data['user']);
                               Navigator.push(
@@ -140,10 +140,10 @@ class _LoginScreenState extends State<LoginScreen> {
                         child: Container(
                           height: 57,
                           decoration: BoxDecoration(
-                            color: Color(0xFF18786F),
+                            color: const Color(0xFF18786F),
                             borderRadius: BorderRadius.circular(25.0),
                           ),
-                          child: Center(
+                          child: const Center(
                             child: Text(
                               'Log In',
                               style: TextStyle(
@@ -170,7 +170,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                             const RegisterScreen()),
                                   );
                                 },
-                                child: Text(
+                                child: const Text(
                                   'Sign Up',
                                   style: TextStyle(
                                       fontWeight: FontWeight.bold,

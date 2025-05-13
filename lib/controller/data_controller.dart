@@ -1,4 +1,3 @@
-import 'package:dio/dio.dart';
 import 'package:get/get.dart' hide Response;
 import 'package:shared_preferences/shared_preferences.dart';
 

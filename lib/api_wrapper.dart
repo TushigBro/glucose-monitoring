@@ -1,6 +1,3 @@
-import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
-
 import 'http_exception_handler.dart';
 
 Future<T?> handleApiCall<T>({

@@ -69,8 +69,8 @@ class _InfoScreenState extends State<InfoScreen> {
       if (response.statusCode == 201) {
         DataController dataController = Get.put(DataController());
         dataController.setUserData(response.data);
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => MainScreen())); 
+        Navigator.pushReplacement(context,
+            MaterialPageRoute(builder: (context) => const MainScreen()));
       } else {
         Get.snackbar("Error", "Failed to register",
             backgroundColor: Colors.red, colorText: Colors.white);
@@ -83,7 +83,7 @@ class _InfoScreenState extends State<InfoScreen> {
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
-        return Container(
+        return SizedBox(
           height: 250,
           child: CupertinoPicker(
             itemExtent: 40,
@@ -101,7 +101,7 @@ class _InfoScreenState extends State<InfoScreen> {
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
-        return Container(
+        return SizedBox(
           height: 250,
           child: CupertinoPicker(
             itemExtent: 40,
@@ -150,11 +150,12 @@ class _InfoScreenState extends State<InfoScreen> {
                   Center(
                     child: Text(
                       'Welcome, ${widget.firstName}',
-                      style: TextStyle(fontSize: 32, color: Color(0xFF18786F)),
+                      style: const TextStyle(
+                          fontSize: 32, color: Color(0xFF18786F)),
                     ),
                   ),
                   const SizedBox(height: 15),
-                  Center(
+                  const Center(
                     child: Text(
                       "Let's fill in your details.",
                       style:
@@ -196,13 +197,13 @@ class _InfoScreenState extends State<InfoScreen> {
                     child: ElevatedButton(
                       onPressed: _validateAndContinue,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Color(0xFF18786F),
+                        backgroundColor: const Color(0xFF18786F),
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(25)),
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 80, vertical: 16),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 80, vertical: 16),
                       ),
-                      child: Text("Continue",
+                      child: const Text("Continue",
                           style: TextStyle(fontSize: 18, color: Colors.white)),
                     ),
                   ),
@@ -211,18 +212,19 @@ class _InfoScreenState extends State<InfoScreen> {
             ),
             AnimatedOpacity(
               opacity: isConfirmed ? 1.0 : 0.0,
-              duration: Duration(milliseconds: 500),
+              duration: const Duration(milliseconds: 500),
               child: isConfirmed
                   ? Container(
                       width: 120,
                       height: 120,
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                         color: Colors.green,
                         shape: BoxShape.circle,
                       ),
-                      child: Icon(Icons.check, size: 80, color: Colors.white),
+                      child: const Icon(Icons.check,
+                          size: 80, color: Colors.white),
                     )
-                  : SizedBox.shrink(),
+                  : const SizedBox.shrink(),
             ),
           ],
         ),
@@ -238,7 +240,7 @@ class _InfoScreenState extends State<InfoScreen> {
         GestureDetector(
           onTap: onTap,
           child: Container(
-            padding: EdgeInsets.symmetric(vertical: 14, horizontal: 16),
+            padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
             decoration: BoxDecoration(
               border: Border.all(
                   color: errorText == null ? Colors.grey.shade300 : Colors.red),
@@ -249,10 +251,10 @@ class _InfoScreenState extends State<InfoScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(label,
-                    style:
-                        TextStyle(fontSize: 20, fontWeight: FontWeight.w200)),
+                    style: const TextStyle(
+                        fontSize: 20, fontWeight: FontWeight.w200)),
                 Text(value,
-                    style: TextStyle(fontSize: 20, color: Colors.black)),
+                    style: const TextStyle(fontSize: 20, color: Colors.black)),
               ],
             ),
           ),
@@ -262,7 +264,7 @@ class _InfoScreenState extends State<InfoScreen> {
             padding: const EdgeInsets.only(left: 10, top: 5),
             child: Text(
               errorText,
-              style: TextStyle(color: Colors.red, fontSize: 14),
+              style: const TextStyle(color: Colors.red, fontSize: 14),
             ),
           ),
       ],

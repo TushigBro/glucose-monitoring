@@ -33,9 +33,9 @@ class _ForgotScreenState extends State<ForgotScreen> {
                         fontWeight: FontWeight.w400,
                         color: Color(0xff086A61)),
                   ),
-                  Text.rich(
+                  const Text.rich(
                     textAlign: TextAlign.center,
-                    const TextSpan(
+                    TextSpan(
                       text:
                           'Please enter your email for a password resetting \n',
                       style:
@@ -49,11 +49,11 @@ class _ForgotScreenState extends State<ForgotScreen> {
                   ),
                   const SizedBox(height: 20),
                   TextField(
-                    cursorColor: Color(0xFF18786F),
+                    cursorColor: const Color(0xFF18786F),
                     onChanged: (value) {
                       email = value;
                     },
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       hintText: 'Email address',
                       hintStyle: TextStyle(fontWeight: FontWeight.w200),
                       border: OutlineInputBorder(),
@@ -66,10 +66,10 @@ class _ForgotScreenState extends State<ForgotScreen> {
                     child: Container(
                       height: 57,
                       decoration: BoxDecoration(
-                        color: Color(0xFF18786F),
+                        color: const Color(0xFF18786F),
                         borderRadius: BorderRadius.circular(25.0),
                       ),
-                      child: Center(
+                      child: const Center(
                         child: Text(
                           'Log In',
                           style: TextStyle(
