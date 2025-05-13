@@ -1,7 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:glucose_monitoring/controller/data_controller.dart';
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
+
+  @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+  final DataController _dataController = Get.put(DataController());
 
   @override
   Widget build(BuildContext context) {
@@ -33,13 +42,13 @@ class ProfileScreen extends StatelessWidget {
             const SizedBox(height: 20),
 
             // Name and Email
-            const Text(
-              "Tushig Gerelt-Od",
+            Text(
+              _dataController.userData['firstName'],
               style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 4),
-            const Text(
-              "gtushig1334@gmail.com",
+            Text(
+              _dataController.userData['email'],
               style: TextStyle(fontSize: 14, color: Colors.grey),
             ),
 

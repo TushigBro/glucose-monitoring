@@ -1,7 +1,11 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart' hide Response;
 import 'package:glucose_monitoring/api_wrapper.dart';
 import 'package:glucose_monitoring/auth/forgot_screen.dart';
+import 'package:glucose_monitoring/auth_service.dart';
+import 'package:glucose_monitoring/controller/data_controller.dart';
 import 'package:glucose_monitoring/info_screen.dart';
 import 'package:glucose_monitoring/main_screen.dart';
 import 'package:glucose_monitoring/auth/register_screen.dart';
@@ -112,17 +116,24 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       const SizedBox(height: 30),
                       InkWell(
-                        onTap: () {
+                        onTap: () async {
                           if (_formKey.currentState!.validate()) {
-                            //handleApiCall(
-                            //apiCall: () {}, loadingMessage: "Loading..");
-                            if (username == 'admin' && password == 'admin') {
+                            try {
+                              Response response = await AuthService().login(
+                                email: username,
+                                password: password,
+                              );
+                               DataController dataController =
+                                  Get.put(DataController());
+                              dataController.setUserData(response.data['user']);
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => const MainScreen(),
                                 ),
                               );
+                            } catch (err) {
+                              //TODO: Handle error
                             }
                           }
                         },

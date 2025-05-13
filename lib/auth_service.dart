@@ -10,9 +10,9 @@ class AuthService {
   AuthService._();
 
   Future<Response> login(
-      {required String number, required String password}) async {
+      {required String email, required String password}) async {
     Response response = await Api().dio.post('auth/login', data: {
-      'phoneNumber': number,
+      'email': email,
       'password': password,
     });
 
@@ -20,16 +20,26 @@ class AuthService {
   }
 
   Future<Response> register(
-      {required String firstName,
+      {required int age,
+      required String sex,
+      required String pregnancy,
+      required String nationality,
+      required String firstName,
       required String lastName,
       required String email,
       required String password}) async {
     Response response = await Api().dio.post('auth/signup', data: {
       'password': password,
+      'confirmPassword': password,
+      'nationality': nationality,
+      'age': age,
       'firstName': firstName,
       'lastName': lastName,
       'email': email,
+      'pregnancy': pregnancy,
+      'sex': sex,
     });
+    
     return response;
   }
 }

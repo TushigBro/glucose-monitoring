@@ -8,9 +8,9 @@ Future<T?> handleApiCall<T>({
   String? loadingMessage,
 }) async {
   try {
-    if (loadingMessage != null) {
-      Get.snackbar(loadingMessage, " ");
-    }
+    // if (loadingMessage != null) {
+    //   Get.snackbar(loadingMessage, " ");
+    // }
     final result = await apiCall();
     return result;
   } catch (e) {

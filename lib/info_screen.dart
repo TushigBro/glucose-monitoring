@@ -1,9 +1,12 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart' hide Response;
+import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:glucose_monitoring/api_wrapper.dart';
 import 'package:glucose_monitoring/auth_service.dart';
+import 'package:glucose_monitoring/controller/data_controller.dart';
 import 'package:glucose_monitoring/main_screen.dart';
 import 'package:country_picker/country_picker.dart';
 
@@ -38,6 +41,7 @@ class _InfoScreenState extends State<InfoScreen> {
   bool isConfirmed = false; // Controls the animation
 
   void _validateAndContinue() async {
+    print("HERE");
     setState(() {
       ageError = selectedAge == 0 ? "Please select your age" : null;
       sexError = selectedSexIndex == 0 ? "Please select your sex" : null;
@@ -53,21 +57,24 @@ class _InfoScreenState extends State<InfoScreen> {
         pregnancyError == null &&
         nationalityError == null) {
       setState(() => isConfirmed = true); // Show animation
-      Response? response = await handleApiCall(
-        apiCall: () => AuthService().register(
-            firstName: widget.firstName,
-            lastName: widget.lastName,
-            email: widget.email,
-            password: widget.password),
-        loadingMessage: 'Уншиж байна...',
-      );
-      if (response != null) {
-        print(response.data);
-      }
-      Future.delayed(Duration(seconds: 1), () {
+      Response response = await AuthService().register(
+          age: selectedAge,
+          sex: sexOptions[selectedSexIndex],
+          nationality: selectedNationality,
+          pregnancy: pregnancyOptions[selectedPregnancyIndex],
+          firstName: widget.firstName,
+          lastName: widget.lastName,
+          email: widget.email,
+          password: widget.password);
+      if (response.statusCode == 201) {
+        DataController dataController = Get.put(DataController());
+        dataController.setUserData(response.data);
         Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => MainScreen()));
-      });
+            context, MaterialPageRoute(builder: (context) => MainScreen())); 
+      } else {
+        Get.snackbar("Error", "Failed to register",
+            backgroundColor: Colors.red, colorText: Colors.white);
+      }
     }
   }
 
