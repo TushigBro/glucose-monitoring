@@ -39,7 +39,7 @@ class AuthService {
       'pregnancy': pregnancy,
       'sex': sex,
     });
-    
+
     return response;
   }
 }
