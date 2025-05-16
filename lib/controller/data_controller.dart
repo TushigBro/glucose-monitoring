@@ -1,24 +1,45 @@
-import 'package:get/get.dart' hide Response;
+import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class DataController extends GetxController {
-  final Rx<dynamic> _userData = Rx<dynamic>(null);
-  dynamic get userData => _userData.value;
+  // Store the user data as an observable map
+  final Rx<Map<String, dynamic>?> userData = Rx<Map<String, dynamic>?>(null);
 
-  void setUserData(dynamic userData) async {
-    _userData.value = userData;
-    if (userData != null) {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      await prefs.setStringList('user', <String>[
-        userData.id,
-        userData.email,
-        userData.firstName,
-        userData.lastName,
-        userData.nationality,
-        userData.sex,
-        userData.pregnancy,
-        userData.age,
-      ]);
-    }
+  void setUserData(Map<String, dynamic> data) async {
+    userData.value = data;
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setStringList('user', <String>[
+      data['id'] ?? '',
+      data['email'] ?? '',
+      data['firstName'] ?? '',
+      data['lastName'] ?? '',
+      data['nationality'] ?? '',
+      data['sex'] ?? '',
+      data['pregnancy'] ?? '',
+      data['age'] ?? '',
+    ]);
+  }
+
+  @override
+  void onInit() {
+    super.onInit();
+
+    Future.delayed(const Duration(seconds: 2), () {
+      userData.value = {
+        'id': '',
+        'firstName': '',
+        'lastName': '',
+        'email': '',
+        'dob': '',
+        'sex': '',
+        'height': '',
+        'weight': '',
+        'contact': '',
+        'nationality': '',
+        'pregnancy': '',
+        'age': '',
+      };
+    });
   }
 }
