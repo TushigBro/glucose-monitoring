@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class MyChatScreen extends StatefulWidget {
   const MyChatScreen({super.key});
@@ -11,7 +12,41 @@ class MyChatScreen extends StatefulWidget {
 
 class _ChatScreenState extends State<MyChatScreen> {
   final TextEditingController _controller = TextEditingController();
+  final storage = const FlutterSecureStorage();
+
   List<Map<String, String>> messages = [];
+  String? chatId;
+
+  @override
+  void initState() {
+    super.initState();
+    _createChat();
+  }
+
+  Future<void> _createChat() async {
+    final token = await storage.read(key: 'jwt_token');
+    if (token == null) {
+      debugPrint('JWT token not found.');
+      return;
+    }
+
+    final response = await http.post(
+      Uri.parse('https://undergraduate-project-ry8h.onrender.com/api/chat'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode == 201) {
+      final data = jsonDecode(response.body);
+      setState(() {
+        chatId = data['id'];
+      });
+    } else {
+      debugPrint("Failed to create chat: ${response.body}");
+    }
+  }
 
   Future<void> sendMessage(String message) async {
     if (message.trim().isEmpty) return;
@@ -21,20 +56,33 @@ class _ChatScreenState extends State<MyChatScreen> {
       _controller.clear();
     });
 
-    final response = await http.post(
-      Uri.parse('http://undergraduate-project-ry8h.onrender.com'),
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({'message': message}),
-    );
+    try {
+      final token = await storage.read(key: 'jwt_token');
 
-    if (response.statusCode == 200) {
-      final data = jsonDecode(response.body);
+      final response = await http.post(
+        Uri.parse(
+            'http://undergraduate-project-ry8h.onrender.com/chat'), // <-- update path here
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+        body: jsonEncode({'message': message}),
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        setState(() {
+          messages.add({'role': 'bot', 'text': data['response']});
+        });
+      } else {
+        setState(() {
+          messages
+              .add({'role': 'bot', 'text': 'Error: ${response.statusCode}'});
+        });
+      }
+    } catch (e) {
       setState(() {
-        messages.add({'role': 'bot', 'text': data['response']});
-      });
-    } else {
-      setState(() {
-        messages.add({'role': 'bot', 'text': 'Error getting response.'});
+        messages.add({'role': 'bot', 'text': 'Network error: $e'});
       });
     }
   }
@@ -46,7 +94,6 @@ class _ChatScreenState extends State<MyChatScreen> {
       body: SafeArea(
         child: Column(
           children: [
-            // Top content
             const Column(
               children: [
                 SizedBox(height: 90),
@@ -67,7 +114,7 @@ class _ChatScreenState extends State<MyChatScreen> {
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 36.0),
                   child: Text(
-                    "I’m gGauge chatbot. I’m here to help you 24/7 to answer your most of the  health considerations.",
+                    "I’m gGauge chatbot. I’m here to help you 24/7 to answer your most of the health considerations.",
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 16,

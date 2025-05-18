@@ -133,7 +133,41 @@ class _LoginScreenState extends State<LoginScreen> {
                                 ),
                               );
                             } catch (err) {
-                              //TODO: Handle error
+                              String errorMessage =
+                                  'Login failed. Please try again.';
+                              if (err is DioError) {
+                                errorMessage = err.response?.data['message'] ??
+                                    err.message;
+                              }
+
+                              final snackBar = SnackBar(
+                                behavior: SnackBarBehavior.floating,
+                                backgroundColor: Colors.white,
+                                elevation: 8,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(16),
+                                ),
+                                content: Row(
+                                  children: [
+                                    const Icon(Icons.error_outline,
+                                        color: Color(0xFFB00020)),
+                                    const SizedBox(width: 12),
+                                    Expanded(
+                                      child: Text(
+                                        errorMessage,
+                                        style: const TextStyle(
+                                          color: Colors.black87,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                duration: const Duration(seconds: 3),
+                              );
+
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(snackBar);
                             }
                           }
                         },
