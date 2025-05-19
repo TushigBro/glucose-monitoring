@@ -13,7 +13,7 @@ class Api {
   static Dio createDio() {
     var dio = Dio(
       BaseOptions(
-        baseUrl: 'http://localhost:3000/',
+        baseUrl: 'https://undergraduate-project-ry8h.onrender.com/',
         receiveTimeout: 15000,
         connectTimeout: 15000,
         sendTimeout: 15000,
