@@ -13,7 +13,7 @@ class Api {
   static Dio createDio() {
     var dio = Dio(
       BaseOptions(
-        baseUrl: 'http://localhost:3000/',
+        baseUrl: 'https://undergraduate-project-ry8h.onrender.com/',
         receiveTimeout: 15000,
         connectTimeout: 15000,
         sendTimeout: 15000,
@@ -23,6 +23,25 @@ class Api {
     dio.interceptors.add(AppInterceptors(dio));
 
     return dio;
+  }
+
+  // In Api.dart
+  Future<List<Map<String, dynamic>>> getGlucoseReadings(String userId) async {
+    try {
+      final response = await dio.get('/glucose/$userId/readings');
+      if (response.statusCode == 200 && response.data is List) {
+        // Sort by timestamp (assuming each reading has a `timestamp` field)
+        final List<Map<String, dynamic>> readings =
+            List<Map<String, dynamic>>.from(response.data)
+              ..sort((a, b) => DateTime.parse(b['timestamp'])
+                  .compareTo(DateTime.parse(a['timestamp'])));
+        return readings;
+      }
+      throw NotFoundException(
+          RequestOptions(path: '/glucose/readings'), 'No readings found');
+    } on DioError catch (e) {
+      throw e;
+    }
   }
 }
 
