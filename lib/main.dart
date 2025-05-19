@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:glucose_monitoring/landing_screen.dart';
+import 'package:get/get.dart';
+import 'controller/data_controller.dart';
 
 //Хамгийн эхэнд ажиллана.
+// main.dart
 void main() {
-  runApp(const MyApp());
+  Get.put(DataController());
+  runApp(MyApp());
 }
 
 //StatelessWidget -> Ямар нэгэн төлвийн өөрчлөлт орохгүй.
