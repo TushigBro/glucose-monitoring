@@ -104,29 +104,23 @@ class _HomescreenState extends State<Homescreen> {
             readings.sort((a, b) => DateTime.parse(b['timestamp'])
                 .compareTo(DateTime.parse(a['timestamp'])));
 
-            // Prepare chart data based on toggle
-            final allSpots = <FlSpot>[];
-            final filteredSpots = <FlSpot>[];
+            // Generate chart data based on toggle state
+            final List<FlSpot> chartSpots = [];
+            final List<DateTime> chartTimestamps = [];
 
-            // Historical data
-            for (var i = 0; i < readings.length; i++) {
-              final entry = readings[i];
-              final value = double.tryParse(entry['value'].toString()) ?? 0.0;
-              final x = i.toDouble() - readings.length + 1; // Left side
-              allSpots.add(FlSpot(x, value));
-              if (!showPredictions) {
-                filteredSpots.add(FlSpot(x, value));
+            if (!showPredictions) {
+              for (int i = 0; i < readings.length; i++) {
+                final entry = readings[i];
+                final value = double.tryParse(entry['value'].toString()) ?? 0.0;
+                chartSpots.add(FlSpot(i.toDouble(), value));
+                chartTimestamps.add(DateTime.parse(entry['timestamp']));
               }
-            }
-
-            // Predictions (right side)
-            for (var i = 0; i < predictions.length; i++) {
-              final entry = predictions[i];
-              final value = double.tryParse(entry['value'].toString()) ?? 0.0;
-              final x = i.toDouble(); // Right side
-              allSpots.add(FlSpot(x, value));
-              if (showPredictions) {
-                filteredSpots.add(FlSpot(x, value));
+            } else {
+              for (int i = 0; i < predictions.length; i++) {
+                final entry = predictions[i];
+                final value = double.tryParse(entry['value'].toString()) ?? 0.0;
+                chartSpots.add(FlSpot(i.toDouble(), value));
+                chartTimestamps.add(DateTime.parse(entry['predictedFor']));
               }
             }
 
@@ -245,8 +239,10 @@ class _HomescreenState extends State<Homescreen> {
                     width: double.infinity,
                     child: LineChart(
                       LineChartData(
-                        minX: minX.toDouble(),
-                        maxX: maxX.toDouble(),
+                        minX: 0,
+                        maxX: chartSpots.isNotEmpty
+                            ? chartSpots.length.toDouble() - 1
+                            : 0,
                         minY: 50,
                         maxY: 200,
                         titlesData: FlTitlesData(
@@ -254,29 +250,19 @@ class _HomescreenState extends State<Homescreen> {
                             sideTitles: SideTitles(
                               showTitles: true,
                               getTitlesWidget: (value, meta) {
-                                if (value < 0) {
-                                  // Historical data
-                                  final index = (-value).toInt() - 1;
-                                  final time = DateTime.parse(
-                                      readings[index]['timestamp']);
+                                int index = value.toInt();
+                                if (index >= 0 &&
+                                    index < chartTimestamps.length) {
+                                  final time = chartTimestamps[index];
                                   return Text(
                                     "${time.hour}:${time.minute.toString().padLeft(2, '0')}",
-                                    style: TextStyle(fontSize: 12),
-                                  );
-                                } else if (value >= 0 &&
-                                    value < predictions.length) {
-                                  // Prediction data
-                                  final time = DateTime.parse(
-                                      predictions[value.toInt()]
-                                          ['predictedFor']);
-                                  return Text(
-                                    "${time.hour}:${time.minute.toString().padLeft(2, '0')}",
-                                    style: TextStyle(fontSize: 12),
+                                    style: const TextStyle(fontSize: 10),
                                   );
                                 }
-                                return Text("");
+                                return const SizedBox.shrink();
                               },
-                              reservedSize: 30,
+                              reservedSize: 32,
+                              interval: 1,
                             ),
                           ),
                           leftTitles: AxisTitles(
@@ -296,62 +282,40 @@ class _HomescreenState extends State<Homescreen> {
                           show: true,
                           drawVerticalLine: true,
                           horizontalInterval: 20,
-                          verticalInterval: 1,
                           getDrawingHorizontalLine: (value) => FlLine(
                             color: Colors.grey.withOpacity(0.3),
                             strokeWidth: 1,
                           ),
                           getDrawingVerticalLine: (value) => FlLine(
-                            color: Colors.grey.withOpacity(0.3),
+                            color: Colors.grey.withOpacity(0.2),
                             strokeWidth: 1,
                           ),
                         ),
                         borderData: FlBorderData(
                           show: true,
                           border: Border.all(
-                              color: Colors.grey.withOpacity(0.5), width: 1),
+                            color: Colors.grey.withOpacity(0.5),
+                          ),
                         ),
                         lineBarsData: [
                           LineChartBarData(
-                            spots: filteredSpots,
+                            spots: chartSpots,
                             isCurved: true,
                             gradient: LinearGradient(
-                              colors: showPredictions
-                                  ? [
-                                      Colors.green.shade900,
-                                      Colors.green.shade300
-                                    ]
-                                  : [
-                                      Colors.blue.shade900,
-                                      Colors.blue.shade300
-                                    ],
+                              colors: [
+                                Colors.blue.shade800,
+                                Colors.blue.shade200
+                              ],
                             ),
-                            barWidth: 4,
-                            isStrokeCapRound: true,
-                            dotData: FlDotData(
-                              show: true,
-                              getDotPainter: (_, __, barData, index) =>
-                                  FlDotCirclePainter(
-                                radius: 4,
-                                color: Colors.white,
-                                strokeColor: showPredictions
-                                    ? Colors.green
-                                    : Colors.blue,
-                                strokeWidth: 2,
-                              ),
-                            ),
+                            barWidth: 3,
+                            dotData: FlDotData(show: true),
                             belowBarData: BarAreaData(
                               show: true,
                               gradient: LinearGradient(
-                                colors: showPredictions
-                                    ? [
-                                        Colors.green.withOpacity(0.3),
-                                        Colors.green.withOpacity(0.05)
-                                      ]
-                                    : [
-                                        Colors.blue.withOpacity(0.3),
-                                        Colors.blue.withOpacity(0.05)
-                                      ],
+                                colors: [
+                                  Colors.blue.withOpacity(0.3),
+                                  Colors.blue.withOpacity(0.1),
+                                ],
                                 begin: Alignment.topCenter,
                                 end: Alignment.bottomCenter,
                               ),
@@ -361,6 +325,7 @@ class _HomescreenState extends State<Homescreen> {
                       ),
                     ),
                   ),
+
                   const SizedBox(height: 30),
                   // Food Recommendations (unchanged)
                   const Text(
