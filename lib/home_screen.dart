@@ -44,9 +44,9 @@ class _HomescreenState extends State<Homescreen> {
   }
 
   String getStatusText(double glucoseValue) {
-    if (glucoseValue < 70) return 'Low';
-    if (glucoseValue > 140) return 'High';
-    return 'Normal';
+    if (glucoseValue < 70) return 'Low ❗';
+    if (glucoseValue > 140) return 'High ❗';
+    return 'Normal ✅';
   }
 
   final List<FoodRecommendation> recommendedFoods = [
