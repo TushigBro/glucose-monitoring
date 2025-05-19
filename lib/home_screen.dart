@@ -1,4 +1,3 @@
-// homescreen.dart
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:get/get.dart';
@@ -13,47 +12,46 @@ class Homescreen extends StatefulWidget {
 }
 
 class _HomescreenState extends State<Homescreen> {
-  late Future<List<Map<String, dynamic>>> glucoseReadingsFuture;
+  late Future<Map<String, dynamic>> glucoseDataFuture;
   final DataController dataController = Get.find();
+
+  // New: Chart toggle state
+  bool showPredictions = false;
 
   @override
   void initState() {
     super.initState();
-    glucoseReadingsFuture = _initializeGlucoseData();
+    glucoseDataFuture = _initializeGlucoseData();
   }
 
-  Future<List<Map<String, dynamic>>> _initializeGlucoseData() async {
-    await dataController.loadUserData(); // Ensure user data is loaded
+  Future<Map<String, dynamic>> _initializeGlucoseData() async {
+    await dataController.loadUserData();
     final userData = dataController.userData.value;
     final userId = userData?['id'];
     if (userId == null) {
       throw Exception('User ID not found in DataController');
     }
-    return await Api().getGlucoseReadings(userId);
+    final readings = await Api().getGlucoseReadings(userId);
+    final predictions = await Api().getPredictedGlucose(userId);
+    return {'readings': readings, 'predictions': predictions};
   }
 
-  // 🔥 New: Returns gradient based on glucose level
   Gradient getGradient(double glucoseValue) {
     if (glucoseValue < 70 || glucoseValue > 140) {
       return LinearGradient(
         colors: [Colors.red.shade900, Colors.red.shade300],
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
       );
     } else {
       return LinearGradient(
         colors: [Colors.green.shade900, Colors.green.shade300],
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
       );
     }
   }
 
-  // 🔥 New: Returns status text
   String getStatusText(double glucoseValue) {
-    if (glucoseValue < 70) return 'Low';
-    if (glucoseValue > 140) return 'High';
-    return 'Normal';
+    if (glucoseValue < 70) return 'Low ❗';
+    if (glucoseValue > 140) return 'High ❗';
+    return 'Normal ✅';
   }
 
   final List<FoodRecommendation> recommendedFoods = [
@@ -82,22 +80,62 @@ class _HomescreenState extends State<Homescreen> {
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white,
-        body: FutureBuilder<List<Map<String, dynamic>>>(
-          future: glucoseReadingsFuture,
+        body: FutureBuilder<Map<String, dynamic>>(
+          future: glucoseDataFuture,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(child: CircularProgressIndicator());
             }
-
             if (snapshot.hasError) {
               return Center(child: Text('Error: ${snapshot.error}'));
             }
-
-            if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            if (!snapshot.hasData ||
+                snapshot.data!['readings'].isEmpty &&
+                    snapshot.data!['predictions'].isEmpty) {
               return Center(child: Text('No glucose data available'));
             }
 
-            final latestReading = snapshot.data!.first;
+            final readings =
+                snapshot.data!['readings'] as List<Map<String, dynamic>>;
+            final predictions =
+                snapshot.data!['predictions'] as List<Map<String, dynamic>>;
+
+            // Sort readings by timestamp (descending)
+            readings.sort((a, b) => DateTime.parse(b['timestamp'])
+                .compareTo(DateTime.parse(a['timestamp'])));
+
+            // Prepare chart data based on toggle
+            final allSpots = <FlSpot>[];
+            final filteredSpots = <FlSpot>[];
+
+            // Historical data
+            for (var i = 0; i < readings.length; i++) {
+              final entry = readings[i];
+              final value = double.tryParse(entry['value'].toString()) ?? 0.0;
+              final x = i.toDouble() - readings.length + 1; // Left side
+              allSpots.add(FlSpot(x, value));
+              if (!showPredictions) {
+                filteredSpots.add(FlSpot(x, value));
+              }
+            }
+
+            // Predictions (right side)
+            for (var i = 0; i < predictions.length; i++) {
+              final entry = predictions[i];
+              final value = double.tryParse(entry['value'].toString()) ?? 0.0;
+              final x = i.toDouble(); // Right side
+              allSpots.add(FlSpot(x, value));
+              if (showPredictions) {
+                filteredSpots.add(FlSpot(x, value));
+              }
+            }
+
+            // Determine min/max X
+            final minX = -readings.length + 1;
+            final maxX = predictions.isNotEmpty ? predictions.length - 1 : 0;
+
+            // Latest reading (for status indicator)
+            final latestReading = readings.first;
             final glucoseValue = latestReading['value'] as double;
             final timestamp = DateTime.parse(latestReading['timestamp']);
             final statusText = getStatusText(glucoseValue);
@@ -133,7 +171,8 @@ class _HomescreenState extends State<Homescreen> {
                             const Text('Last Measured:',
                                 style: TextStyle(
                                     fontSize: 14, fontWeight: FontWeight.w200)),
-                            Text('${timestamp.hour}:${timestamp.minute}',
+                            Text(
+                                '${timestamp.hour}:${timestamp.minute.toString().padLeft(2, '0')}',
                                 style: TextStyle(
                                     fontSize: 14, fontWeight: FontWeight.w200)),
                           ],
@@ -156,9 +195,8 @@ class _HomescreenState extends State<Homescreen> {
                               ),
                               child: Center(
                                 child: ShaderMask(
-                                  shaderCallback: (Rect rect) {
-                                    return gradient.createShader(rect);
-                                  },
+                                  shaderCallback: (Rect rect) =>
+                                      gradient.createShader(rect),
                                   child: Text(
                                     statusText,
                                     textAlign: TextAlign.center,
@@ -176,25 +214,68 @@ class _HomescreenState extends State<Homescreen> {
                     ),
                   ),
                   const SizedBox(height: 35),
+                  // Toggle Button
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      ElevatedButton(
+                        onPressed: () =>
+                            setState(() => showPredictions = false),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor:
+                              !showPredictions ? Colors.blue : Colors.grey,
+                        ),
+                        child: const Text('History'),
+                      ),
+                      const SizedBox(width: 16),
+                      ElevatedButton(
+                        onPressed: () => setState(() => showPredictions = true),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor:
+                              showPredictions ? Colors.blue : Colors.grey,
+                        ),
+                        child: const Text('Predictions'),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
                   // Chart
                   SizedBox(
                     height: 227,
                     width: double.infinity,
                     child: LineChart(
                       LineChartData(
-                        minX: 1,
-                        maxX: 6,
-                        minY: 0,
-                        maxY: 120,
+                        minX: minX.toDouble(),
+                        maxX: maxX.toDouble(),
+                        minY: 50,
+                        maxY: 200,
                         titlesData: FlTitlesData(
                           bottomTitles: AxisTitles(
                             sideTitles: SideTitles(
                               showTitles: true,
-                              getTitlesWidget: (value, meta) => Padding(
-                                padding: const EdgeInsets.only(top: 8.0),
-                                child: Text('${value.toInt()}:00',
-                                    style: const TextStyle(fontSize: 12)),
-                              ),
+                              getTitlesWidget: (value, meta) {
+                                if (value < 0) {
+                                  // Historical data
+                                  final index = (-value).toInt() - 1;
+                                  final time = DateTime.parse(
+                                      readings[index]['timestamp']);
+                                  return Text(
+                                    "${time.hour}:${time.minute.toString().padLeft(2, '0')}",
+                                    style: TextStyle(fontSize: 12),
+                                  );
+                                } else if (value >= 0 &&
+                                    value < predictions.length) {
+                                  // Prediction data
+                                  final time = DateTime.parse(
+                                      predictions[value.toInt()]
+                                          ['predictedFor']);
+                                  return Text(
+                                    "${time.hour}:${time.minute.toString().padLeft(2, '0')}",
+                                    style: TextStyle(fontSize: 12),
+                                  );
+                                }
+                                return Text("");
+                              },
                               reservedSize: 30,
                             ),
                           ),
@@ -206,9 +287,9 @@ class _HomescreenState extends State<Homescreen> {
                               reservedSize: 30,
                             ),
                           ),
-                          topTitles: const AxisTitles(
+                          topTitles: AxisTitles(
                               sideTitles: SideTitles(showTitles: false)),
-                          rightTitles: const AxisTitles(
+                          rightTitles: AxisTitles(
                               sideTitles: SideTitles(showTitles: false)),
                         ),
                         gridData: FlGridData(
@@ -232,40 +313,45 @@ class _HomescreenState extends State<Homescreen> {
                         ),
                         lineBarsData: [
                           LineChartBarData(
-                            spots: const [
-                              FlSpot(1, 60),
-                              FlSpot(2, 70),
-                              FlSpot(3, 80),
-                              FlSpot(4, 90),
-                              FlSpot(5, 100),
-                              FlSpot(6, 110),
-                            ],
+                            spots: filteredSpots,
                             isCurved: true,
                             gradient: LinearGradient(
-                              colors: [
-                                Colors.teal.withOpacity(0.9),
-                                Colors.tealAccent.withOpacity(0.7),
-                              ],
+                              colors: showPredictions
+                                  ? [
+                                      Colors.green.shade900,
+                                      Colors.green.shade300
+                                    ]
+                                  : [
+                                      Colors.blue.shade900,
+                                      Colors.blue.shade300
+                                    ],
                             ),
                             barWidth: 4,
                             isStrokeCapRound: true,
                             dotData: FlDotData(
                               show: true,
-                              getDotPainter: (spot, percent, barData, index) =>
+                              getDotPainter: (_, __, barData, index) =>
                                   FlDotCirclePainter(
                                 radius: 4,
                                 color: Colors.white,
-                                strokeColor: Colors.teal,
+                                strokeColor: showPredictions
+                                    ? Colors.green
+                                    : Colors.blue,
                                 strokeWidth: 2,
                               ),
                             ),
                             belowBarData: BarAreaData(
                               show: true,
                               gradient: LinearGradient(
-                                colors: [
-                                  Colors.teal.withOpacity(0.3),
-                                  Colors.teal.withOpacity(0.05),
-                                ],
+                                colors: showPredictions
+                                    ? [
+                                        Colors.green.withOpacity(0.3),
+                                        Colors.green.withOpacity(0.05)
+                                      ]
+                                    : [
+                                        Colors.blue.withOpacity(0.3),
+                                        Colors.blue.withOpacity(0.05)
+                                      ],
                                 begin: Alignment.topCenter,
                                 end: Alignment.bottomCenter,
                               ),
@@ -276,13 +362,12 @@ class _HomescreenState extends State<Homescreen> {
                     ),
                   ),
                   const SizedBox(height: 30),
-                  // Food Recommendations Title
+                  // Food Recommendations (unchanged)
                   const Text(
                     "Recommended Foods",
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 12),
-                  // Scrollable Horizontal List
                   SizedBox(
                     height: 130,
                     child: ListView.builder(
@@ -335,16 +420,12 @@ class _HomescreenState extends State<Homescreen> {
                 ),
               ),
               const SizedBox(height: 12),
-              Text(
-                food.name,
-                style:
-                    const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-              ),
+              Text(food.name,
+                  style: const TextStyle(
+                      fontSize: 22, fontWeight: FontWeight.bold)),
               const SizedBox(height: 8),
-              Text(
-                food.description,
-                style: TextStyle(color: Colors.grey[700], fontSize: 16),
-              ),
+              Text(food.description,
+                  style: TextStyle(color: Colors.grey[700], fontSize: 16)),
               const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () => Navigator.pop(context),
@@ -369,7 +450,6 @@ class FoodRecommendation {
   final String name;
   final String imageUrl;
   final String description;
-
   FoodRecommendation({
     required this.name,
     required this.imageUrl,
@@ -380,7 +460,6 @@ class FoodRecommendation {
 // Horizontal Card
 class FoodCard extends StatelessWidget {
   final FoodRecommendation food;
-
   const FoodCard({super.key, required this.food});
 
   @override

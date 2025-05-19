@@ -15,8 +15,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final DataController _dataController = Get.put(DataController());
   bool _isEditing = false;
 
-  late TextEditingController dobController;
-  late TextEditingController sexController;
   late TextEditingController heightController;
   late TextEditingController weightController;
   late TextEditingController contactController;
@@ -24,8 +22,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   void initState() {
     super.initState();
-    dobController = TextEditingController();
-    sexController = TextEditingController();
     heightController = TextEditingController();
     weightController = TextEditingController();
     contactController = TextEditingController();
@@ -34,8 +30,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
       _dataController.userData,
       (data) {
         if (data != null && !_isEditing) {
-          dobController.text = data['dob'] ?? '';
-          sexController.text = data['sex'] ?? '';
           heightController.text = data['height'] ?? '';
           weightController.text = data['weight'] ?? '';
           contactController.text = data['contact'] ?? '';
@@ -46,8 +40,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   void dispose() {
-    dobController.dispose();
-    sexController.dispose();
     heightController.dispose();
     weightController.dispose();
     contactController.dispose();
@@ -110,14 +102,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                     onPressed: () {
                       if (_isEditing) {
-                        _dataController.userData.value = {
+                        final updatedData = {
                           ...userData,
-                          'dob': dobController.text,
-                          'sex': sexController.text,
                           'height': heightController.text,
                           'weight': weightController.text,
                           'contact': contactController.text,
                         };
+                        _dataController.setUserData(updatedData);
                       }
 
                       setState(() {
@@ -146,15 +137,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               style: TextStyle(
                                   fontSize: 16, fontWeight: FontWeight.w600)),
                           const SizedBox(height: 20),
-                          _isEditing
-                              ? editableRow(Icons.calendar_today,
-                                  "Date of Birth", dobController)
-                              : infoRow(Icons.calendar_today, "Date of Birth",
-                                  userData['dob'] ?? '', primaryColor),
-                          _isEditing
-                              ? editableRow(Icons.male, "Sex", sexController)
-                              : infoRow(Icons.male, "Sex",
-                                  userData['sex'] ?? '', primaryColor),
+                          infoRow(Icons.cake, "Age",
+                              userData['age']?.toString() ?? '', primaryColor),
+                          infoRow(Icons.male, "Sex", userData['sex'] ?? '',
+                              primaryColor),
                           _isEditing
                               ? editableRow(
                                   Icons.height, "Height", heightController)
@@ -175,7 +161,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                   ),
                   const SizedBox(height: 40),
-                  // 🔴 LOGOUT BUTTON
                   ElevatedButton.icon(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.redAccent,
@@ -187,8 +172,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                     ),
                     onPressed: () {
-                      // Clear any user data here if needed
-                      _dataController.userData.value = null;
+                      _dataController.clearUserData();
 
                       Navigator.pushAndRemoveUntil(
                         context,
@@ -241,64 +225,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(label, style: const TextStyle(fontSize: 15)),
-                if (label == "Date of Birth")
-                  GestureDetector(
-                    onTap: () async {
-                      DateTime? picked = await showDatePicker(
-                        context: context,
-                        initialDate: DateTime.now(),
-                        firstDate: DateTime(1900),
-                        lastDate: DateTime.now(),
-                      );
-                      if (picked != null) {
-                        controller.text =
-                            "${picked.year}-${picked.month.toString().padLeft(2, '0')}-${picked.day.toString().padLeft(2, '0')}";
-                      }
-                    },
-                    child: AbsorbPointer(
-                      child: TextField(
-                        controller: controller,
-                        style: const TextStyle(
-                            fontSize: 15, fontWeight: FontWeight.bold),
-                        decoration: const InputDecoration(
-                          isDense: true,
-                          contentPadding: EdgeInsets.symmetric(vertical: 4),
-                          border: UnderlineInputBorder(),
-                          hintText: "YYYY-MM-DD",
-                        ),
-                      ),
-                    ),
-                  )
-                else if (label == "Sex")
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8),
-                    child: Text(
-                      controller.text,
-                      style: const TextStyle(
-                          fontSize: 15, fontWeight: FontWeight.bold),
-                    ),
-                  )
-                else
-                  TextField(
-                    controller: controller,
-                    keyboardType: (label == "Height" ||
-                            label == "Weight" ||
-                            label == "Contact")
-                        ? TextInputType.number
-                        : TextInputType.text,
-                    inputFormatters: (label == "Height" ||
-                            label == "Weight" ||
-                            label == "Contact")
-                        ? [FilteringTextInputFormatter.digitsOnly]
-                        : null,
-                    style: const TextStyle(
-                        fontSize: 15, fontWeight: FontWeight.bold),
-                    decoration: const InputDecoration(
-                      isDense: true,
-                      contentPadding: EdgeInsets.symmetric(vertical: 4),
-                      border: UnderlineInputBorder(),
-                    ),
+                TextField(
+                  controller: controller,
+                  keyboardType: TextInputType.number,
+                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                  style: const TextStyle(
+                      fontSize: 15, fontWeight: FontWeight.bold),
+                  decoration: const InputDecoration(
+                    isDense: true,
+                    contentPadding: EdgeInsets.symmetric(vertical: 4),
+                    border: UnderlineInputBorder(),
                   ),
+                ),
               ],
             ),
           ),
