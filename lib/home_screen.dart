@@ -14,7 +14,6 @@ class Homescreen extends StatefulWidget {
 class _HomescreenState extends State<Homescreen> {
   late Future<Map<String, dynamic>> glucoseDataFuture;
   final DataController dataController = Get.find();
-
   bool showPredictions = false;
 
   @override
@@ -37,13 +36,10 @@ class _HomescreenState extends State<Homescreen> {
 
   Gradient getGradient(double glucoseValue) {
     if (glucoseValue < 70 || glucoseValue > 140) {
-      return LinearGradient(
-        colors: [Colors.red.shade900, Colors.red.shade300],
-      );
+      return LinearGradient(colors: [Colors.red.shade900, Colors.red.shade300]);
     } else {
       return LinearGradient(
-        colors: [Colors.green.shade900, Colors.green.shade300],
-      );
+          colors: [Colors.green.shade900, Colors.green.shade300]);
     }
   }
 
@@ -57,19 +53,19 @@ class _HomescreenState extends State<Homescreen> {
     FoodRecommendation(
       name: "Avocado Toast",
       imageUrl:
-          "https://www.rootsandradishes.com/wp-content/uploads/2017/08/avocado-toast-with-everything-bagel-seasoning-feat.jpg",
+          "https://www.rootsandradishes.com/wp-content/uploads/2017/08/avocado-toast-with-everything-bagel-seasoning-feat.jpg ",
       description: "Healthy fats and fiber-rich.",
     ),
     FoodRecommendation(
       name: "Greek Yogurt",
       imageUrl:
-          "https://images.unsplash.com/photo-1627308595229-7830a5c91f9f?auto=format&fit=crop&w=800&q=60",
+          "https://images.unsplash.com/photo-1627308595229-7830a5c91f9f?auto=format&fit=crop&w=800&q=60 ",
       description: "High in protein and probiotics.",
     ),
     FoodRecommendation(
       name: "Oatmeal with Berries",
       imageUrl:
-          "https://www.pcrm.org/sites/default/files/Oatmeal%20and%20Berries.jpg",
+          "https://www.pcrm.org/sites/default/files/Oatmeal%20and%20Berries.jpg ",
       description: "Great for slow-releasing energy.",
     ),
   ];
@@ -83,15 +79,15 @@ class _HomescreenState extends State<Homescreen> {
           future: glucoseDataFuture,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
+              return Center(child: CircularProgressIndicator());
             }
             if (snapshot.hasError) {
               return Center(child: Text('Error: ${snapshot.error}'));
             }
             if (!snapshot.hasData ||
-                (snapshot.data!['readings'].isEmpty &&
-                    snapshot.data!['predictions'].isEmpty)) {
-              return const Center(child: Text('No glucose data available'));
+                snapshot.data!['readings'].isEmpty &&
+                    snapshot.data!['predictions'].isEmpty) {
+              return Center(child: Text('No glucose data available'));
             }
 
             final readings =
@@ -99,29 +95,11 @@ class _HomescreenState extends State<Homescreen> {
             final predictions =
                 snapshot.data!['predictions'] as List<Map<String, dynamic>>;
 
+            // Sort readings by timestamp (descending)
             readings.sort((a, b) => DateTime.parse(b['timestamp'])
                 .compareTo(DateTime.parse(a['timestamp'])));
 
-<<<<<<< HEAD
-            final filteredSpots = <FlSpot>[];
-
-            for (var i = 0; i < readings.length; i++) {
-              final value =
-                  double.tryParse(readings[i]['value'].toString()) ?? 0.0;
-              final x = i.toDouble() - readings.length + 1;
-              if (!showPredictions) {
-                filteredSpots.add(FlSpot(x, value));
-              }
-            }
-
-            for (var i = 0; i < predictions.length; i++) {
-              final value =
-                  double.tryParse(predictions[i]['value'].toString()) ?? 0.0;
-              final x = i.toDouble();
-              if (showPredictions) {
-                filteredSpots.add(FlSpot(x, value));
-=======
-            // Generate chart data based on toggle state
+            // Prepare chart data based on toggle state
             final List<FlSpot> chartSpots = [];
             final List<DateTime> chartTimestamps = [];
 
@@ -138,16 +116,16 @@ class _HomescreenState extends State<Homescreen> {
                 final value = double.tryParse(entry['value'].toString()) ?? 0.0;
                 chartSpots.add(FlSpot(i.toDouble(), value));
                 chartTimestamps.add(DateTime.parse(entry['predictedFor']));
->>>>>>> f6c26f2b3c40629daf448b4d15e24697d5542074
               }
             }
 
-            final minX = -readings.length + 1;
-            final maxX = predictions.isNotEmpty ? predictions.length - 1 : 0;
+            // Determine min/max X
+            final minX = 0;
+            final maxX = chartSpots.isNotEmpty ? chartSpots.last.x : 0;
 
+            // Latest reading (for status indicator)
             final latestReading = readings.first;
-            final glucoseValue =
-                double.tryParse(latestReading['value'].toString()) ?? 0.0;
+            final glucoseValue = latestReading['value'] as double;
             final timestamp = DateTime.parse(latestReading['timestamp']);
             final statusText = getStatusText(glucoseValue);
             final gradient = getGradient(glucoseValue);
@@ -163,9 +141,8 @@ class _HomescreenState extends State<Homescreen> {
                     padding: const EdgeInsets.all(14.0),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(16.0),
-                      gradient: const LinearGradient(
-                        colors: [Color(0xff17B5A6), Color(0xffD8EFEE)],
-                      ),
+                      gradient: getGradient(
+                          glucoseValue), // This will dynamically apply red or green
                     ),
                     height: 150,
                     child: Row(
@@ -176,44 +153,49 @@ class _HomescreenState extends State<Homescreen> {
                             const Text('Current Glucose',
                                 style: TextStyle(
                                     fontSize: 14, fontWeight: FontWeight.w200)),
-                            Text('$glucoseValue mg/dL',
+                            Text('${glucoseValue.toInt()} mg/dL',
                                 style: const TextStyle(
                                     fontSize: 36, fontWeight: FontWeight.w600)),
                             const Text('Last Measured:',
                                 style: TextStyle(
                                     fontSize: 14, fontWeight: FontWeight.w200)),
                             Text(
-                                '${timestamp.hour}:${timestamp.minute.toString().padLeft(2, '0')}',
-                                style: const TextStyle(
-                                    fontSize: 14, fontWeight: FontWeight.w200)),
+                              '${timestamp.hour}:${timestamp.minute.toString().padLeft(2, '0')}',
+                              style: const TextStyle(
+                                  fontSize: 14, fontWeight: FontWeight.w200),
+                            ),
                           ],
                         ),
                         const Spacer(),
+                        // Gradient Status Circle
+                        // Gradient Status Circle with Transparent Background
                         Container(
                           height: 93,
                           width: 93,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             gradient: gradient,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.2),
+                                blurRadius: 4,
+                                spreadRadius: -2,
+                                offset: Offset(0, 2),
+                              ),
+                            ],
                           ),
                           child: Padding(
                             padding: const EdgeInsets.all(5.0),
-                            child: Container(
-                              decoration: const BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Colors.white,
-                              ),
-                              child: Center(
-                                child: ShaderMask(
-                                  shaderCallback: (Rect rect) =>
-                                      gradient.createShader(rect),
-                                  child: Text(
-                                    statusText,
-                                    textAlign: TextAlign.center,
-                                    style: const TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.w500,
-                                    ),
+                            child: Center(
+                              child: ShaderMask(
+                                shaderCallback: (Rect rect) =>
+                                    gradient.createShader(rect),
+                                child: Text(
+                                  statusText,
+                                  textAlign: TextAlign.center,
+                                  style: const TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.w500,
                                   ),
                                 ),
                               ),
@@ -224,7 +206,7 @@ class _HomescreenState extends State<Homescreen> {
                     ),
                   ),
                   const SizedBox(height: 35),
-                  // Toggle Buttons
+                  // Toggle Button
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -255,52 +237,30 @@ class _HomescreenState extends State<Homescreen> {
                     width: double.infinity,
                     child: LineChart(
                       LineChartData(
-                        minX: 0,
-                        maxX: chartSpots.isNotEmpty
-                            ? chartSpots.length.toDouble() - 1
-                            : 0,
+                        minX: minX.toDouble(),
+                        maxX: maxX.toDouble(),
                         minY: 50,
-                        maxY: 250,
+                        maxY: 200,
                         titlesData: FlTitlesData(
                           bottomTitles: AxisTitles(
                             sideTitles: SideTitles(
                               showTitles: true,
-<<<<<<< HEAD
-                              getTitlesWidget: (value, _) {
-                                if (value < 0) {
-                                  final index = (-value).toInt() - 1;
-                                  if (index >= 0 && index < readings.length) {
-                                    final time = DateTime.parse(
-                                        readings[index]['timestamp']);
-                                    return Text(
-                                      "${time.hour}:${time.minute.toString().padLeft(2, '0')}",
-                                      style: const TextStyle(fontSize: 12),
-                                    );
-                                  }
-                                } else if (value >= 0 &&
-                                    value < predictions.length) {
-                                  final time = DateTime.parse(
-                                      predictions[value.toInt()]
-                                          ['predictedFor']);
-                                  return Text(
-                                    "${time.hour}:${time.minute.toString().padLeft(2, '0')}",
-                                    style: const TextStyle(fontSize: 12),
-                                  );
-                                }
-                                return const Text("");
-=======
                               getTitlesWidget: (value, meta) {
-                                int index = value.toInt();
+                                final index = value.toInt();
                                 if (index >= 0 &&
                                     index < chartTimestamps.length) {
-                                  final time = chartTimestamps[index];
-                                  return Text(
-                                    "${time.hour}:${time.minute.toString().padLeft(2, '0')}",
-                                    style: const TextStyle(fontSize: 10),
-                                  );
+                                  // Show labels every 12 data points
+                                  if (index % 12 == 0 ||
+                                      index == 0 ||
+                                      index == chartTimestamps.length - 1) {
+                                    final time = chartTimestamps[index];
+                                    return Text(
+                                      "${time.hour}:${time.minute.toString().padLeft(2, '0')}",
+                                      style: const TextStyle(fontSize: 10),
+                                    );
+                                  }
                                 }
                                 return const SizedBox.shrink();
->>>>>>> f6c26f2b3c40629daf448b4d15e24697d5542074
                               },
                               reservedSize: 32,
                               interval: 1,
@@ -309,7 +269,7 @@ class _HomescreenState extends State<Homescreen> {
                           leftTitles: AxisTitles(
                             sideTitles: SideTitles(
                               showTitles: true,
-                              getTitlesWidget: (value, _) =>
+                              getTitlesWidget: (value, meta) =>
                                   Text('${value.toInt()}'),
                               reservedSize: 30,
                             ),
@@ -319,10 +279,6 @@ class _HomescreenState extends State<Homescreen> {
                           rightTitles: AxisTitles(
                               sideTitles: SideTitles(showTitles: false)),
                         ),
-<<<<<<< HEAD
-                        gridData: FlGridData(show: true),
-                        borderData: FlBorderData(show: true),
-=======
                         gridData: FlGridData(
                           show: true,
                           drawVerticalLine: true,
@@ -338,31 +294,14 @@ class _HomescreenState extends State<Homescreen> {
                         ),
                         borderData: FlBorderData(
                           show: true,
-                          border: Border.all(
-                            color: Colors.grey.withOpacity(0.5),
-                          ),
+                          border:
+                              Border.all(color: Colors.grey.withOpacity(0.5)),
                         ),
->>>>>>> f6c26f2b3c40629daf448b4d15e24697d5542074
                         lineBarsData: [
                           LineChartBarData(
                             spots: chartSpots,
                             isCurved: true,
                             gradient: LinearGradient(
-<<<<<<< HEAD
-                              colors: showPredictions
-                                  ? [
-                                      Colors.green.shade900,
-                                      Colors.green.shade300
-                                    ]
-                                  : [
-                                      Colors.blue.shade900,
-                                      Colors.blue.shade300
-                                    ],
-                            ),
-                            barWidth: 4,
-                            dotData: FlDotData(show: true),
-                            belowBarData: BarAreaData(show: true),
-=======
                               colors: [
                                 Colors.blue.shade800,
                                 Colors.blue.shade200
@@ -374,24 +313,26 @@ class _HomescreenState extends State<Homescreen> {
                               show: true,
                               gradient: LinearGradient(
                                 colors: [
-                                  Colors.blue.withOpacity(0.3),
-                                  Colors.blue.withOpacity(0.1),
+                                  const Color.fromARGB(255, 33, 243, 114)
+                                      .withOpacity(0.3),
+                                  const Color.fromARGB(255, 33, 243, 58)
+                                      .withOpacity(0.1),
                                 ],
                                 begin: Alignment.topCenter,
                                 end: Alignment.bottomCenter,
                               ),
                             ),
->>>>>>> f6c26f2b3c40629daf448b4d15e24697d5542074
                           ),
                         ],
                       ),
                     ),
                   ),
-
                   const SizedBox(height: 30),
-                  const Text("Recommended Foods",
-                      style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                  // Food Recommendations
+                  const Text(
+                    "Recommended Foods",
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  ),
                   const SizedBox(height: 12),
                   SizedBox(
                     height: 130,
@@ -410,6 +351,7 @@ class _HomescreenState extends State<Homescreen> {
                       },
                     ),
                   ),
+                  const SizedBox(height: 30),
                 ],
               ),
             );
@@ -459,7 +401,7 @@ class _HomescreenState extends State<Homescreen> {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
                 ),
-                child: const Text("Close"),
+                child: Text("Close"),
               ),
             ],
           ),
