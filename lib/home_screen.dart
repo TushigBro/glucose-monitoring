@@ -15,7 +15,6 @@ class _HomescreenState extends State<Homescreen> {
   late Future<Map<String, dynamic>> glucoseDataFuture;
   final DataController dataController = Get.find();
 
-  // New: Chart toggle state
   bool showPredictions = false;
 
   @override
@@ -49,28 +48,28 @@ class _HomescreenState extends State<Homescreen> {
   }
 
   String getStatusText(double glucoseValue) {
-    if (glucoseValue < 70) return 'Low ❗';
-    if (glucoseValue > 140) return 'High ❗';
-    return 'Normal ✅';
+    if (glucoseValue < 70) return 'Low';
+    if (glucoseValue > 140) return 'High';
+    return 'Normal';
   }
 
   final List<FoodRecommendation> recommendedFoods = [
     FoodRecommendation(
       name: "Avocado Toast",
       imageUrl:
-          "https://www.rootsandradishes.com/wp-content/uploads/2017/08/avocado-toast-with-everything-bagel-seasoning-feat.jpg ",
+          "https://www.rootsandradishes.com/wp-content/uploads/2017/08/avocado-toast-with-everything-bagel-seasoning-feat.jpg",
       description: "Healthy fats and fiber-rich.",
     ),
     FoodRecommendation(
       name: "Greek Yogurt",
       imageUrl:
-          "https://images.unsplash.com/photo-1627308595229-7830a5c91f9f?auto=format&fit=crop&w=800&q=60 ",
+          "https://images.unsplash.com/photo-1627308595229-7830a5c91f9f?auto=format&fit=crop&w=800&q=60",
       description: "High in protein and probiotics.",
     ),
     FoodRecommendation(
       name: "Oatmeal with Berries",
       imageUrl:
-          "https://www.pcrm.org/sites/default/files/Oatmeal%20and%20Berries.jpg ",
+          "https://www.pcrm.org/sites/default/files/Oatmeal%20and%20Berries.jpg",
       description: "Great for slow-releasing energy.",
     ),
   ];
@@ -84,15 +83,15 @@ class _HomescreenState extends State<Homescreen> {
           future: glucoseDataFuture,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(child: CircularProgressIndicator());
+              return const Center(child: CircularProgressIndicator());
             }
             if (snapshot.hasError) {
               return Center(child: Text('Error: ${snapshot.error}'));
             }
             if (!snapshot.hasData ||
-                snapshot.data!['readings'].isEmpty &&
-                    snapshot.data!['predictions'].isEmpty) {
-              return Center(child: Text('No glucose data available'));
+                (snapshot.data!['readings'].isEmpty &&
+                    snapshot.data!['predictions'].isEmpty)) {
+              return const Center(child: Text('No glucose data available'));
             }
 
             final readings =
@@ -100,43 +99,35 @@ class _HomescreenState extends State<Homescreen> {
             final predictions =
                 snapshot.data!['predictions'] as List<Map<String, dynamic>>;
 
-            // Sort readings by timestamp (descending)
             readings.sort((a, b) => DateTime.parse(b['timestamp'])
                 .compareTo(DateTime.parse(a['timestamp'])));
 
-            // Prepare chart data based on toggle
-            final allSpots = <FlSpot>[];
             final filteredSpots = <FlSpot>[];
 
-            // Historical data
             for (var i = 0; i < readings.length; i++) {
-              final entry = readings[i];
-              final value = double.tryParse(entry['value'].toString()) ?? 0.0;
-              final x = i.toDouble() - readings.length + 1; // Left side
-              allSpots.add(FlSpot(x, value));
+              final value =
+                  double.tryParse(readings[i]['value'].toString()) ?? 0.0;
+              final x = i.toDouble() - readings.length + 1;
               if (!showPredictions) {
                 filteredSpots.add(FlSpot(x, value));
               }
             }
 
-            // Predictions (right side)
             for (var i = 0; i < predictions.length; i++) {
-              final entry = predictions[i];
-              final value = double.tryParse(entry['value'].toString()) ?? 0.0;
-              final x = i.toDouble(); // Right side
-              allSpots.add(FlSpot(x, value));
+              final value =
+                  double.tryParse(predictions[i]['value'].toString()) ?? 0.0;
+              final x = i.toDouble();
               if (showPredictions) {
                 filteredSpots.add(FlSpot(x, value));
               }
             }
 
-            // Determine min/max X
             final minX = -readings.length + 1;
             final maxX = predictions.isNotEmpty ? predictions.length - 1 : 0;
 
-            // Latest reading (for status indicator)
             final latestReading = readings.first;
-            final glucoseValue = latestReading['value'] as double;
+            final glucoseValue =
+                double.tryParse(latestReading['value'].toString()) ?? 0.0;
             final timestamp = DateTime.parse(latestReading['timestamp']);
             final statusText = getStatusText(glucoseValue);
             final gradient = getGradient(glucoseValue);
@@ -173,12 +164,11 @@ class _HomescreenState extends State<Homescreen> {
                                     fontSize: 14, fontWeight: FontWeight.w200)),
                             Text(
                                 '${timestamp.hour}:${timestamp.minute.toString().padLeft(2, '0')}',
-                                style: TextStyle(
+                                style: const TextStyle(
                                     fontSize: 14, fontWeight: FontWeight.w200)),
                           ],
                         ),
                         const Spacer(),
-                        // Gradient Status Circle
                         Container(
                           height: 93,
                           width: 93,
@@ -189,7 +179,7 @@ class _HomescreenState extends State<Homescreen> {
                           child: Padding(
                             padding: const EdgeInsets.all(5.0),
                             child: Container(
-                              decoration: BoxDecoration(
+                              decoration: const BoxDecoration(
                                 shape: BoxShape.circle,
                                 color: Colors.white,
                               ),
@@ -214,7 +204,7 @@ class _HomescreenState extends State<Homescreen> {
                     ),
                   ),
                   const SizedBox(height: 35),
-                  // Toggle Button
+                  // Toggle Buttons
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -248,33 +238,33 @@ class _HomescreenState extends State<Homescreen> {
                         minX: minX.toDouble(),
                         maxX: maxX.toDouble(),
                         minY: 50,
-                        maxY: 200,
+                        maxY: 250,
                         titlesData: FlTitlesData(
                           bottomTitles: AxisTitles(
                             sideTitles: SideTitles(
                               showTitles: true,
-                              getTitlesWidget: (value, meta) {
+                              getTitlesWidget: (value, _) {
                                 if (value < 0) {
-                                  // Historical data
                                   final index = (-value).toInt() - 1;
-                                  final time = DateTime.parse(
-                                      readings[index]['timestamp']);
-                                  return Text(
-                                    "${time.hour}:${time.minute.toString().padLeft(2, '0')}",
-                                    style: TextStyle(fontSize: 12),
-                                  );
+                                  if (index >= 0 && index < readings.length) {
+                                    final time = DateTime.parse(
+                                        readings[index]['timestamp']);
+                                    return Text(
+                                      "${time.hour}:${time.minute.toString().padLeft(2, '0')}",
+                                      style: const TextStyle(fontSize: 12),
+                                    );
+                                  }
                                 } else if (value >= 0 &&
                                     value < predictions.length) {
-                                  // Prediction data
                                   final time = DateTime.parse(
                                       predictions[value.toInt()]
                                           ['predictedFor']);
                                   return Text(
                                     "${time.hour}:${time.minute.toString().padLeft(2, '0')}",
-                                    style: TextStyle(fontSize: 12),
+                                    style: const TextStyle(fontSize: 12),
                                   );
                                 }
-                                return Text("");
+                                return const Text("");
                               },
                               reservedSize: 30,
                             ),
@@ -282,7 +272,7 @@ class _HomescreenState extends State<Homescreen> {
                           leftTitles: AxisTitles(
                             sideTitles: SideTitles(
                               showTitles: true,
-                              getTitlesWidget: (value, meta) =>
+                              getTitlesWidget: (value, _) =>
                                   Text('${value.toInt()}'),
                               reservedSize: 30,
                             ),
@@ -292,25 +282,8 @@ class _HomescreenState extends State<Homescreen> {
                           rightTitles: AxisTitles(
                               sideTitles: SideTitles(showTitles: false)),
                         ),
-                        gridData: FlGridData(
-                          show: true,
-                          drawVerticalLine: true,
-                          horizontalInterval: 20,
-                          verticalInterval: 1,
-                          getDrawingHorizontalLine: (value) => FlLine(
-                            color: Colors.grey.withOpacity(0.3),
-                            strokeWidth: 1,
-                          ),
-                          getDrawingVerticalLine: (value) => FlLine(
-                            color: Colors.grey.withOpacity(0.3),
-                            strokeWidth: 1,
-                          ),
-                        ),
-                        borderData: FlBorderData(
-                          show: true,
-                          border: Border.all(
-                              color: Colors.grey.withOpacity(0.5), width: 1),
-                        ),
+                        gridData: FlGridData(show: true),
+                        borderData: FlBorderData(show: true),
                         lineBarsData: [
                           LineChartBarData(
                             spots: filteredSpots,
@@ -327,46 +300,17 @@ class _HomescreenState extends State<Homescreen> {
                                     ],
                             ),
                             barWidth: 4,
-                            isStrokeCapRound: true,
-                            dotData: FlDotData(
-                              show: true,
-                              getDotPainter: (_, __, barData, index) =>
-                                  FlDotCirclePainter(
-                                radius: 4,
-                                color: Colors.white,
-                                strokeColor: showPredictions
-                                    ? Colors.green
-                                    : Colors.blue,
-                                strokeWidth: 2,
-                              ),
-                            ),
-                            belowBarData: BarAreaData(
-                              show: true,
-                              gradient: LinearGradient(
-                                colors: showPredictions
-                                    ? [
-                                        Colors.green.withOpacity(0.3),
-                                        Colors.green.withOpacity(0.05)
-                                      ]
-                                    : [
-                                        Colors.blue.withOpacity(0.3),
-                                        Colors.blue.withOpacity(0.05)
-                                      ],
-                                begin: Alignment.topCenter,
-                                end: Alignment.bottomCenter,
-                              ),
-                            ),
+                            dotData: FlDotData(show: true),
+                            belowBarData: BarAreaData(show: true),
                           ),
                         ],
                       ),
                     ),
                   ),
                   const SizedBox(height: 30),
-                  // Food Recommendations (unchanged)
-                  const Text(
-                    "Recommended Foods",
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
+                  const Text("Recommended Foods",
+                      style:
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
                   const SizedBox(height: 12),
                   SizedBox(
                     height: 130,
@@ -385,7 +329,6 @@ class _HomescreenState extends State<Homescreen> {
                       },
                     ),
                   ),
-                  const SizedBox(height: 30),
                 ],
               ),
             );
@@ -435,7 +378,7 @@ class _HomescreenState extends State<Homescreen> {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
                 ),
-                child: Text("Close"),
+                child: const Text("Close"),
               ),
             ],
           ),
@@ -445,7 +388,6 @@ class _HomescreenState extends State<Homescreen> {
   }
 }
 
-// Model
 class FoodRecommendation {
   final String name;
   final String imageUrl;
@@ -457,7 +399,6 @@ class FoodRecommendation {
   });
 }
 
-// Horizontal Card
 class FoodCard extends StatelessWidget {
   final FoodRecommendation food;
   const FoodCard({super.key, required this.food});
