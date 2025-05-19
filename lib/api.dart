@@ -43,6 +43,20 @@ class Api {
       throw e;
     }
   }
+
+  // In Api.dart
+  Future<List<Map<String, dynamic>>> getPredictedGlucose(String userId) async {
+    try {
+      final response = await dio.get('/glucose/$userId/predictions');
+      if (response.statusCode == 200 && response.data is List) {
+        return List<Map<String, dynamic>>.from(response.data);
+      }
+      throw NotFoundException(
+          RequestOptions(path: '/glucose/predictions'), 'No predictions found');
+    } on DioError catch (e) {
+      throw e;
+    }
+  }
 }
 
 class AppInterceptors extends Interceptor {
