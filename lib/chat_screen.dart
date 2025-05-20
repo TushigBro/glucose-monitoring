@@ -13,6 +13,8 @@ class _ChatScreenState extends State<MyChatScreen> {
   final TextEditingController _controller = TextEditingController();
   final List<Map<String, String>> messages = [];
 
+  bool isTyping = false;
+
   final String apiKey =
       "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";
 
@@ -22,6 +24,7 @@ class _ChatScreenState extends State<MyChatScreen> {
     setState(() {
       messages.add({'role': 'user', 'text': message});
       _controller.clear();
+      isTyping = true;
     });
 
     try {
@@ -29,8 +32,7 @@ class _ChatScreenState extends State<MyChatScreen> {
 
       final headers = {
         'Content-Type': 'application/json',
-        'Authorization':
-            "Bearer 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",
+        'Authorization': "Bearer $apiKey",
         'HTTP-Referer': 'https://undergraduate-project-ry8h.onrender.com/',
         'X-Title': 'gGauge Chatbot',
       };
@@ -49,11 +51,12 @@ class _ChatScreenState extends State<MyChatScreen> {
         final data = jsonDecode(response.body);
         final reply = data['choices'][0]['message']['content'];
         setState(() {
+          isTyping = false;
           messages.add({'role': 'bot', 'text': reply});
         });
       } else {
-        print('❌ Response ${response.statusCode}: ${response.body}');
         setState(() {
+          isTyping = false;
           messages.add({
             'role': 'bot',
             'text': 'Error: ${response.statusCode} — ${response.body}'
@@ -61,8 +64,8 @@ class _ChatScreenState extends State<MyChatScreen> {
         });
       }
     } catch (e) {
-      print('❌ Exception: $e');
       setState(() {
+        isTyping = false;
         messages.add({'role': 'bot', 'text': 'Network error: $e'});
       });
     }
@@ -102,8 +105,16 @@ class _ChatScreenState extends State<MyChatScreen> {
             Expanded(
               child: ListView.builder(
                 padding: const EdgeInsets.all(16),
-                itemCount: messages.length,
+                itemCount: messages.length + (isTyping ? 1 : 0),
                 itemBuilder: (context, index) {
+                  if (index == messages.length && isTyping) {
+                    // Show typing indicator
+                    return const Align(
+                      alignment: Alignment.centerLeft,
+                      child: TypingIndicator(),
+                    );
+                  }
+
                   final msg = messages[index];
                   final isUser = msg['role'] == 'user';
                   return Align(
@@ -159,5 +170,53 @@ class _ChatScreenState extends State<MyChatScreen> {
         ),
       ),
     );
+  }
+}
+
+class TypingIndicator extends StatefulWidget {
+  const TypingIndicator({super.key});
+
+  @override
+  State<TypingIndicator> createState() => _TypingIndicatorState();
+}
+
+class _TypingIndicatorState extends State<TypingIndicator>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<int> _dotCount;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 1000),
+      vsync: this,
+    )..repeat();
+
+    _dotCount = StepTween(begin: 1, end: 3).animate(_controller);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _dotCount,
+      builder: (context, child) {
+        return Container(
+          margin: const EdgeInsets.symmetric(vertical: 4),
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: Colors.grey[300],
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Text('Typing${'.' * _dotCount.value}'),
+        );
+      },
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 }
