@@ -7,6 +7,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 
 class Homescreen extends StatefulWidget {
   const Homescreen({super.key});
+
   @override
   State<Homescreen> createState() => _HomescreenState();
 }
@@ -36,36 +37,37 @@ class _HomescreenState extends State<Homescreen> {
 
   Gradient getGradient(double glucoseValue) {
     if (glucoseValue < 70 || glucoseValue > 140) {
-      return LinearGradient(colors: [Colors.red.shade900, Colors.red.shade300]);
+      return const LinearGradient(
+          colors: [Color(0xFFFF6B6B), Color(0xFFDA2C38)]);
     } else {
-      return LinearGradient(
-          colors: [Colors.green.shade900, Colors.green.shade300]);
+      return const LinearGradient(
+          colors: [Color(0xffD8EFEE), Color(0xff22C55E)]);
     }
   }
 
   String getStatusText(double glucoseValue) {
-    if (glucoseValue < 70) return 'Low ❗';
-    if (glucoseValue > 140) return 'High ❗';
-    return 'Normal ✅';
+    if (glucoseValue < 70) return 'Low';
+    if (glucoseValue > 140) return 'High';
+    return 'Good';
   }
 
   final List<FoodRecommendation> recommendedFoods = [
     FoodRecommendation(
       name: "Avocado Toast",
       imageUrl:
-          "https://www.rootsandradishes.com/wp-content/uploads/2017/08/avocado-toast-with-everything-bagel-seasoning-feat.jpg ",
+          "https://www.rootsandradishes.com/wp-content/uploads/2017/08/avocado-toast-with-everything-bagel-seasoning-feat.jpg  ",
       description: "Healthy fats and fiber-rich.",
     ),
     FoodRecommendation(
       name: "Greek Yogurt",
       imageUrl:
-          "https://images.unsplash.com/photo-1627308595229-7830a5c91f9f?auto=format&fit=crop&w=800&q=60 ",
+          "https://images.unsplash.com/photo-1627308595229-7830a5c91f9f?auto=format&fit=crop&w=800&q=60  ",
       description: "High in protein and probiotics.",
     ),
     FoodRecommendation(
       name: "Oatmeal with Berries",
       imageUrl:
-          "https://www.pcrm.org/sites/default/files/Oatmeal%20and%20Berries.jpg ",
+          "https://www.pcrm.org/sites/default/files/Oatmeal%20and%20Berries.jpg  ",
       description: "Great for slow-releasing energy.",
     ),
   ];
@@ -79,15 +81,15 @@ class _HomescreenState extends State<Homescreen> {
           future: glucoseDataFuture,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(child: CircularProgressIndicator());
+              return const Center(child: CircularProgressIndicator());
             }
             if (snapshot.hasError) {
               return Center(child: Text('Error: ${snapshot.error}'));
             }
             if (!snapshot.hasData ||
-                snapshot.data!['readings'].isEmpty &&
-                    snapshot.data!['predictions'].isEmpty) {
-              return Center(child: Text('No glucose data available'));
+                (snapshot.data!['readings'] as List).isEmpty &&
+                    (snapshot.data!['predictions'] as List).isEmpty) {
+              return const Center(child: Text('No glucose data available'));
             }
 
             final readings =
@@ -141,8 +143,7 @@ class _HomescreenState extends State<Homescreen> {
                     padding: const EdgeInsets.all(14.0),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(16.0),
-                      gradient: getGradient(
-                          glucoseValue), // This will dynamically apply red or green
+                      gradient: getGradient(glucoseValue),
                     ),
                     height: 150,
                     child: Row(
@@ -167,8 +168,7 @@ class _HomescreenState extends State<Homescreen> {
                           ],
                         ),
                         const Spacer(),
-                        // Gradient Status Circle
-                        // Gradient Status Circle with Transparent Background
+                        // Status Circle
                         Container(
                           height: 93,
                           width: 93,
@@ -205,32 +205,61 @@ class _HomescreenState extends State<Homescreen> {
                       ],
                     ),
                   ),
-                  const SizedBox(height: 35),
-                  // Toggle Button
+
+                  const SizedBox(height: 20),
+
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      ElevatedButton(
-                        onPressed: () =>
-                            setState(() => showPredictions = false),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor:
-                              !showPredictions ? Colors.blue : Colors.grey,
-                        ),
-                        child: const Text('History'),
-                      ),
-                      const SizedBox(width: 16),
-                      ElevatedButton(
-                        onPressed: () => setState(() => showPredictions = true),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor:
-                              showPredictions ? Colors.blue : Colors.grey,
-                        ),
-                        child: const Text('Predictions'),
+                      ToggleButtons(
+                        borderRadius: BorderRadius.circular(24),
+                        borderColor: Colors.blue.withOpacity(0.7),
+                        borderWidth: 2,
+                        selectedBorderColor: Colors.blue,
+                        selectedColor: Colors.white,
+                        fillColor: Colors.blue.withOpacity(0.9),
+                        splashColor: Colors.blue.withOpacity(0.3),
+                        hoverColor: Colors.blue.withOpacity(0.2),
+                        constraints:
+                            const BoxConstraints(minHeight: 44, minWidth: 100),
+                        textStyle: const TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.w500),
+                        isSelected: [!showPredictions, showPredictions],
+                        onPressed: (index) {
+                          setState(() {
+                            showPredictions = index == 1;
+                          });
+                        },
+                        children: const [
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 16.0),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(Icons.show_chart, size: 20),
+                                SizedBox(width: 8),
+                                Text('History'),
+                              ],
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 16.0),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(Icons.auto_graph, size: 20),
+                                SizedBox(width: 8),
+                                Text('Predictions'),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
+
                   const SizedBox(height: 16),
+
                   // Chart
                   SizedBox(
                     height: 227,
@@ -249,7 +278,6 @@ class _HomescreenState extends State<Homescreen> {
                                 final index = value.toInt();
                                 if (index >= 0 &&
                                     index < chartTimestamps.length) {
-                                  // Show labels every 12 data points
                                   if (index % 12 == 0 ||
                                       index == 0 ||
                                       index == chartTimestamps.length - 1) {
@@ -301,11 +329,8 @@ class _HomescreenState extends State<Homescreen> {
                           LineChartBarData(
                             spots: chartSpots,
                             isCurved: true,
-                            gradient: LinearGradient(
-                              colors: [
-                                Colors.blue.shade800,
-                                Colors.blue.shade200
-                              ],
+                            gradient: const LinearGradient(
+                              colors: [Colors.blueAccent, Colors.blue],
                             ),
                             barWidth: 3,
                             dotData: FlDotData(show: true),
@@ -327,7 +352,9 @@ class _HomescreenState extends State<Homescreen> {
                       ),
                     ),
                   ),
+
                   const SizedBox(height: 30),
+
                   // Food Recommendations
                   const Text(
                     "Recommended Foods",
@@ -401,7 +428,7 @@ class _HomescreenState extends State<Homescreen> {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
                 ),
-                child: Text("Close"),
+                child: const Text("Close"),
               ),
             ],
           ),
@@ -415,6 +442,7 @@ class FoodRecommendation {
   final String name;
   final String imageUrl;
   final String description;
+
   FoodRecommendation({
     required this.name,
     required this.imageUrl,
@@ -424,6 +452,7 @@ class FoodRecommendation {
 
 class FoodCard extends StatelessWidget {
   final FoodRecommendation food;
+
   const FoodCard({super.key, required this.food});
 
   @override

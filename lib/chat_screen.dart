@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class MyChatScreen extends StatefulWidget {
   const MyChatScreen({super.key});
@@ -12,40 +11,20 @@ class MyChatScreen extends StatefulWidget {
 
 class _ChatScreenState extends State<MyChatScreen> {
   final TextEditingController _controller = TextEditingController();
-  final storage = const FlutterSecureStorage();
+  final ScrollController _scrollController = ScrollController();
 
   List<Map<String, String>> messages = [];
-  String? chatId;
 
-  @override
-  void initState() {
-    super.initState();
-    _createChat();
-  }
-
-  Future<void> _createChat() async {
-    final token = await storage.read(key: 'jwt_token');
-    if (token == null) {
-      debugPrint('JWT token not found.');
-      return;
-    }
-
-    final response = await http.post(
-      Uri.parse('https://undergraduate-project-ry8h.onrender.com/api/chat'),
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $token',
-      },
-    );
-
-    if (response.statusCode == 201) {
-      final data = jsonDecode(response.body);
-      setState(() {
-        chatId = data['id'];
-      });
-    } else {
-      debugPrint("Failed to create chat: ${response.body}");
-    }
+  void _scrollToBottom() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_scrollController.hasClients) {
+        _scrollController.animateTo(
+          _scrollController.position.maxScrollExtent,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeOut,
+        );
+      }
+    });
   }
 
   Future<void> sendMessage(String message) async {
@@ -55,36 +34,58 @@ class _ChatScreenState extends State<MyChatScreen> {
       messages.add({'role': 'user', 'text': message});
       _controller.clear();
     });
+    _scrollToBottom();
+
+    const apiKey =
+        "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"; // 🔑 Replace this with your actual API key
 
     try {
-      final token = await storage.read(key: 'jwt_token');
-
       final response = await http.post(
-        Uri.parse(
-            'http://undergraduate-project-ry8h.onrender.com/chat'), // <-- update path here
+        Uri.parse('https://openrouter.ai/api/v1/chat/completions'),
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer $token',
+          'Authorization': 'Bearer $apiKey',
+          'HTTP-Referer':
+              'https://undergraduate-project-ry8h.onrender.com/', // ⚠️ Replace with your app/site URL
+          'X-Title': 'gGauge Chatbot',
         },
-        body: jsonEncode({'message': message}),
+        body: jsonEncode({
+          "model": "anthropic/claude-3-haiku",
+          "messages": [
+            {
+              "role": "system",
+              "content":
+                  "You are a helpful AI health assistant for the gGauge app."
+            },
+            ...messages.map((msg) => {
+                  "role": msg['role'],
+                  "content": msg['text'],
+                }),
+          ],
+        }),
       );
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
+        final reply = data['choices'][0]['message']['content'];
         setState(() {
-          messages.add({'role': 'bot', 'text': data['response']});
+          messages.add({'role': 'bot', 'text': reply.trim()});
         });
       } else {
         setState(() {
-          messages
-              .add({'role': 'bot', 'text': 'Error: ${response.statusCode}'});
+          messages.add({
+            'role': 'bot',
+            'text': 'Error ${response.statusCode}: ${response.body}',
+          });
         });
       }
     } catch (e) {
       setState(() {
-        messages.add({'role': 'bot', 'text': 'Network error: $e'});
+        messages.add({'role': 'bot', 'text': 'Connection error: $e'});
       });
     }
+
+    _scrollToBottom();
   }
 
   @override
@@ -114,7 +115,7 @@ class _ChatScreenState extends State<MyChatScreen> {
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 36.0),
                   child: Text(
-                    "I’m gGauge chatbot. I’m here to help you 24/7 to answer your most of the health considerations.",
+                    "I’m gGauge chatbot. I’m here to help you 24/7 to answer most of your health considerations.",
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 16,
@@ -125,12 +126,12 @@ class _ChatScreenState extends State<MyChatScreen> {
                 ),
               ],
             ),
-
             const SizedBox(height: 20),
 
             // Chat messages
             Expanded(
               child: ListView.builder(
+                controller: _scrollController,
                 padding: const EdgeInsets.all(16),
                 itemCount: messages.length,
                 itemBuilder: (context, index) {
