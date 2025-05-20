@@ -1,6 +1,6 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'dart:convert';
 
 class MyChatScreen extends StatefulWidget {
   const MyChatScreen({super.key});
@@ -11,21 +11,10 @@ class MyChatScreen extends StatefulWidget {
 
 class _ChatScreenState extends State<MyChatScreen> {
   final TextEditingController _controller = TextEditingController();
-  final ScrollController _scrollController = ScrollController();
+  final List<Map<String, String>> messages = [];
 
-  List<Map<String, String>> messages = [];
-
-  void _scrollToBottom() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (_scrollController.hasClients) {
-        _scrollController.animateTo(
-          _scrollController.position.maxScrollExtent,
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.easeOut,
-        );
-      }
-    });
-  }
+  final String apiKey =
+      "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";
 
   Future<void> sendMessage(String message) async {
     if (message.trim().isEmpty) return;
@@ -34,58 +23,49 @@ class _ChatScreenState extends State<MyChatScreen> {
       messages.add({'role': 'user', 'text': message});
       _controller.clear();
     });
-    _scrollToBottom();
-
-    const apiKey =
-        "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"; // 🔑 Replace this with your actual API key
 
     try {
-      final response = await http.post(
-        Uri.parse('https://openrouter.ai/api/v1/chat/completions'),
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer $apiKey',
-          'HTTP-Referer':
-              'https://undergraduate-project-ry8h.onrender.com/', // ⚠️ Replace with your app/site URL
-          'X-Title': 'gGauge Chatbot',
-        },
-        body: jsonEncode({
-          "model": "anthropic/claude-3-haiku",
-          "messages": [
-            {
-              "role": "system",
-              "content":
-                  "You are a helpful AI health assistant for the gGauge app."
-            },
-            ...messages.map((msg) => {
-                  "role": msg['role'],
-                  "content": msg['text'],
-                }),
-          ],
-        }),
-      );
+      final uri = Uri.parse('https://openrouter.ai/api/v1/chat/completions');
+
+      final headers = {
+        'Content-Type': 'application/json',
+        'Authorization':
+            'Bearer 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',
+        'HTTP-Referer': 'https://undergraduate-project-ry8h.onrender.com/',
+        'X-Title': 'gGauge Chatbot',
+      };
+
+      final body = jsonEncode({
+        'model': "mistralai/mistral-7b-instruct",
+        'messages': [
+          {'role': 'system', 'content': 'You are a helpful health assistant.'},
+          {'role': 'user', 'content': message},
+        ],
+      });
+
+      final response = await http.post(uri, headers: headers, body: body);
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         final reply = data['choices'][0]['message']['content'];
         setState(() {
-          messages.add({'role': 'bot', 'text': reply.trim()});
+          messages.add({'role': 'bot', 'text': reply});
         });
       } else {
+        print('❌ Response ${response.statusCode}: ${response.body}');
         setState(() {
           messages.add({
             'role': 'bot',
-            'text': 'Error ${response.statusCode}: ${response.body}',
+            'text': 'Error: ${response.statusCode} — ${response.body}'
           });
         });
       }
     } catch (e) {
+      print('❌ Exception: $e');
       setState(() {
-        messages.add({'role': 'bot', 'text': 'Connection error: $e'});
+        messages.add({'role': 'bot', 'text': 'Network error: $e'});
       });
     }
-
-    _scrollToBottom();
   }
 
   @override
@@ -95,43 +75,32 @@ class _ChatScreenState extends State<MyChatScreen> {
       body: SafeArea(
         child: Column(
           children: [
-            const Column(
-              children: [
-                SizedBox(height: 90),
-                Image(
-                  image: AssetImage('assets/images/logo.png'),
-                  height: 30,
-                  width: 41,
-                ),
-                SizedBox(height: 20),
-                Text(
-                  'Hello User!',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                SizedBox(height: 14),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 36.0),
-                  child: Text(
-                    "I’m gGauge chatbot. I’m here to help you 24/7 to answer most of your health considerations.",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w400,
-                      height: 1.5,
-                    ),
-                  ),
-                ),
-              ],
+            const SizedBox(height: 90),
+            const Image(
+              image: AssetImage('assets/images/logo.png'),
+              height: 30,
+              width: 41,
+            ),
+            const SizedBox(height: 20),
+            const Text(
+              'Hello User!',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 14),
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 36.0),
+              child: Text(
+                "I’m gGauge chatbot. I’m here to help you 24/7 to answer your most of the health considerations.",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    fontSize: 16, fontWeight: FontWeight.w400, height: 1.5),
+              ),
             ),
             const SizedBox(height: 20),
 
             // Chat messages
             Expanded(
               child: ListView.builder(
-                controller: _scrollController,
                 padding: const EdgeInsets.all(16),
                 itemCount: messages.length,
                 itemBuilder: (context, index) {
@@ -144,8 +113,7 @@ class _ChatScreenState extends State<MyChatScreen> {
                       margin: const EdgeInsets.symmetric(vertical: 4),
                       padding: const EdgeInsets.all(12),
                       constraints: BoxConstraints(
-                        maxWidth: MediaQuery.of(context).size.width * 0.7,
-                      ),
+                          maxWidth: MediaQuery.of(context).size.width * 0.7),
                       decoration: BoxDecoration(
                         color:
                             isUser ? const Color(0xff10D0BF) : Colors.grey[300],
@@ -158,7 +126,7 @@ class _ChatScreenState extends State<MyChatScreen> {
               ),
             ),
 
-            // Chat input
+            // Input box
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Container(
@@ -180,10 +148,7 @@ class _ChatScreenState extends State<MyChatScreen> {
                       ),
                     ),
                     IconButton(
-                      icon: const Icon(
-                        Icons.send,
-                        color: Color(0xff086A61),
-                      ),
+                      icon: const Icon(Icons.send, color: Color(0xff086A61)),
                       onPressed: () => sendMessage(_controller.text),
                     ),
                   ],
