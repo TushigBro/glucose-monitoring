@@ -136,13 +136,13 @@ class _HomescreenState extends State<Homescreen> {
     try {
       Response response = await Api().getFoodRecommendations();
       if (response.statusCode == 200 && response.data is Map<String, dynamic>) {
-        RecommendationResponse res =  RecommendationResponse.fromJson(response.data);
+        RecommendationResponse res =
+            RecommendationResponse.fromJson(response.data);
         return res.recommendations;
       } else {
         return [];
       }
     } catch (e) {
-      print(e);
       return [];
     }
   }
@@ -428,7 +428,6 @@ class _HomescreenState extends State<Homescreen> {
                   FutureBuilder<List<Food>>(
                     future: fetchRecommendedFoods(),
                     builder: (context, snapshot) {
-                      print(snapshot.data);
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return const Center(child: CircularProgressIndicator());
                       } else if (snapshot.hasError) {
