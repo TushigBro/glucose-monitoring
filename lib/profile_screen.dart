@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:glucose_monitoring/controller/data_controller.dart';
 import 'package:glucose_monitoring/auth/login_screen.dart';
+import 'package:glucose_monitoring/landing_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -172,14 +173,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                     ),
                     onPressed: () {
-                      _dataController.clearUserData();
-
-                      Navigator.pushAndRemoveUntil(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const LoginScreen()),
-                        (route) => false,
-                      );
+                      _showLogoutConfirmationDialog(context);
                     },
                     icon: const Icon(Icons.logout),
                     label: const Text(
@@ -238,6 +232,42 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                 ),
               ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showLogoutConfirmationDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("Confirm Logout"),
+        content: const Text("Are you sure you want to log out?"),
+        actions: [
+          TextButton(
+            onPressed: Navigator.of(context).pop,
+            child: const Text("Cancel"),
+            style: TextButton.styleFrom(
+              foregroundColor: const Color(0xff22C55E),
+            ),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop(); // Close dialog
+              _dataController.clearUserData();
+
+              // Clear all routes and go to LandingScreen
+              Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
+                MaterialPageRoute(builder: (context) => const LandingScreen()),
+                (route) => false,
+              );
+            },
+            child: const Text("Log Out"),
+            style: TextButton.styleFrom(
+              foregroundColor: const Color(0xFFDA2C38), // Set text color
+              textStyle: const TextStyle(fontWeight: FontWeight.bold),
             ),
           ),
         ],
