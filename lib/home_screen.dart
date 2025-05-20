@@ -142,6 +142,7 @@ class _HomescreenState extends State<Homescreen> {
         return [];
       }
     } catch (e) {
+      print(e);
       return [];
     }
   }
@@ -427,6 +428,7 @@ class _HomescreenState extends State<Homescreen> {
                   FutureBuilder<List<Food>>(
                     future: fetchRecommendedFoods(),
                     builder: (context, snapshot) {
+                      print(snapshot.data);
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return const Center(child: CircularProgressIndicator());
                       } else if (snapshot.hasError) {
