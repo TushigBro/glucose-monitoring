@@ -5,6 +5,84 @@ import 'package:glucose_monitoring/api.dart';
 import 'package:glucose_monitoring/controller/data_controller.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
+// === Model Classes (Inline for simplicity) ===
+class Nutrition {
+  final double? calories;
+  final double? protein;
+  final double? fat;
+  final double? sugar;
+
+  Nutrition({this.calories, this.protein, this.fat, this.sugar});
+
+  factory Nutrition.fromJson(Map<String, dynamic> json) {
+    return Nutrition(
+      calories: json['calories']?.toDouble(),
+      protein: json['protein']?.toDouble(),
+      fat: json['fat']?.toDouble(),
+      sugar: json['sugar']?.toDouble(),
+    );
+  }
+}
+
+class Food {
+  final String id;
+  final String name;
+  final int giValue;
+  final String mealType;
+  final String imageUrl;
+  final String recipeLink;
+  final Nutrition nutrition;
+  final List<String> allergens;
+  final List<String> tags;
+
+  Food({
+    required this.id,
+    required this.name,
+    required this.giValue,
+    required this.mealType,
+    required this.imageUrl,
+    required this.recipeLink,
+    required this.nutrition,
+    required this.allergens,
+    required this.tags,
+  });
+
+  factory Food.fromJson(Map<String, dynamic> json) {
+    return Food(
+      id: json['id'],
+      name: json['name'],
+      giValue: json['giValue'],
+      mealType: json['mealType'],
+      imageUrl: json['imageUrl'],
+      recipeLink: json['recipeLink'],
+      nutrition: Nutrition.fromJson(json['nutrition']),
+      allergens: List<String>.from(json['allergens']),
+      tags: List<String>.from(json['tags']),
+    );
+  }
+}
+
+class RecommendationResponse {
+  final List<Food> recommendations;
+  final String glucoseTrend;
+
+  RecommendationResponse({
+    required this.recommendations,
+    required this.glucoseTrend,
+  });
+
+  factory RecommendationResponse.fromJson(Map<String, dynamic> json) {
+    var list = json['recommendations'] as List;
+    List<Food> foods = list.map((i) => Food.fromJson(i)).toList();
+
+    return RecommendationResponse(
+      recommendations: foods,
+      glucoseTrend: json['glucoseTrend'],
+    );
+  }
+}
+// === End of Models ===
+
 class Homescreen extends StatefulWidget {
   const Homescreen({super.key});
 
@@ -51,26 +129,16 @@ class _HomescreenState extends State<Homescreen> {
     return 'Good';
   }
 
-  final List<FoodRecommendation> recommendedFoods = [
-    FoodRecommendation(
-      name: "Avocado Toast",
-      imageUrl:
-          "https://www.rootsandradishes.com/wp-content/uploads/2017/08/avocado-toast-with-everything-bagel-seasoning-feat.jpg  ",
-      description: "Healthy fats and fiber-rich.",
-    ),
-    FoodRecommendation(
-      name: "Greek Yogurt",
-      imageUrl:
-          "https://images.unsplash.com/photo-1627308595229-7830a5c91f9f?auto=format&fit=crop&w=800&q=60  ",
-      description: "High in protein and probiotics.",
-    ),
-    FoodRecommendation(
-      name: "Oatmeal with Berries",
-      imageUrl:
-          "https://www.pcrm.org/sites/default/files/Oatmeal%20and%20Berries.jpg  ",
-      description: "Great for slow-releasing energy.",
-    ),
-  ];
+  // Replace hardcoded food with API call
+  Future<List<Food>> fetchRecommendedFoods() async {
+    try {
+      final response = await Api().getFoodRecommendations();
+      return response.recommendations;
+    } catch (e) {
+      print("Error fetching recommendations: $e");
+      return [];
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -97,11 +165,9 @@ class _HomescreenState extends State<Homescreen> {
             final predictions =
                 snapshot.data!['predictions'] as List<Map<String, dynamic>>;
 
-            // Sort readings by timestamp (descending)
             readings.sort((a, b) => DateTime.parse(b['timestamp'])
                 .compareTo(DateTime.parse(a['timestamp'])));
 
-            // Prepare chart data based on toggle state
             final List<FlSpot> chartSpots = [];
             final List<DateTime> chartTimestamps = [];
 
@@ -121,11 +187,9 @@ class _HomescreenState extends State<Homescreen> {
               }
             }
 
-            // Determine min/max X
             final minX = 0;
             final maxX = chartSpots.isNotEmpty ? chartSpots.last.x : 0;
 
-            // Latest reading (for status indicator)
             final latestReading = readings.first;
             final glucoseValue = latestReading['value'] as double;
             final timestamp = DateTime.parse(latestReading['timestamp']);
@@ -168,7 +232,6 @@ class _HomescreenState extends State<Homescreen> {
                           ],
                         ),
                         const Spacer(),
-                        // Status Circle
                         Container(
                           height: 93,
                           width: 93,
@@ -205,9 +268,7 @@ class _HomescreenState extends State<Homescreen> {
                       ],
                     ),
                   ),
-
                   const SizedBox(height: 20),
-
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -257,9 +318,7 @@ class _HomescreenState extends State<Homescreen> {
                       ),
                     ],
                   ),
-
                   const SizedBox(height: 16),
-
                   // Chart
                   SizedBox(
                     height: 227,
@@ -352,31 +411,43 @@ class _HomescreenState extends State<Homescreen> {
                       ),
                     ),
                   ),
-
                   const SizedBox(height: 30),
-
                   // Food Recommendations
                   const Text(
                     "Recommended Foods",
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 12),
-                  SizedBox(
-                    height: 130,
-                    child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: recommendedFoods.length,
-                      itemBuilder: (context, index) {
-                        return Padding(
-                          padding: const EdgeInsets.only(right: 12.0),
-                          child: GestureDetector(
-                            onTap: () => _showFoodDetails(
-                                context, recommendedFoods[index]),
-                            child: FoodCard(food: recommendedFoods[index]),
+                  FutureBuilder<List<Food>>(
+                    future: fetchRecommendedFoods(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(child: CircularProgressIndicator());
+                      } else if (snapshot.hasError) {
+                        return Text('Error: ${snapshot.error}');
+                      } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                        return const Text('No recommendations available.');
+                      } else {
+                        return SizedBox(
+                          height: 130,
+                          child: ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            itemCount: snapshot.data!.length,
+                            itemBuilder: (context, index) {
+                              final food = snapshot.data![index];
+                              return Padding(
+                                padding: const EdgeInsets.only(right: 12.0),
+                                child: GestureDetector(
+                                  onTap: () =>
+                                      _showFoodDetailsFromApi(context, food),
+                                  child: FoodCardFromApi(food: food),
+                                ),
+                              );
+                            },
                           ),
                         );
-                      },
-                    ),
+                      }
+                    },
                   ),
                   const SizedBox(height: 30),
                 ],
@@ -388,7 +459,7 @@ class _HomescreenState extends State<Homescreen> {
     );
   }
 
-  void _showFoodDetails(BuildContext context, FoodRecommendation food) {
+  void _showFoodDetailsFromApi(BuildContext context, Food food) {
     showModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(
@@ -417,8 +488,10 @@ class _HomescreenState extends State<Homescreen> {
                   style: const TextStyle(
                       fontSize: 22, fontWeight: FontWeight.bold)),
               const SizedBox(height: 8),
-              Text(food.description,
-                  style: TextStyle(color: Colors.grey[700], fontSize: 16)),
+              Text(
+                'GI Value: ${food.giValue}\nMeal Type: ${food.mealType}\nCalories: ${food.nutrition.calories ?? 0}',
+                style: TextStyle(color: Colors.grey[700], fontSize: 16),
+              ),
               const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () => Navigator.pop(context),
@@ -438,22 +511,9 @@ class _HomescreenState extends State<Homescreen> {
   }
 }
 
-class FoodRecommendation {
-  final String name;
-  final String imageUrl;
-  final String description;
-
-  FoodRecommendation({
-    required this.name,
-    required this.imageUrl,
-    required this.description,
-  });
-}
-
-class FoodCard extends StatelessWidget {
-  final FoodRecommendation food;
-
-  const FoodCard({super.key, required this.food});
+class FoodCardFromApi extends StatelessWidget {
+  final Food food;
+  const FoodCardFromApi({super.key, required this.food});
 
   @override
   Widget build(BuildContext context) {
