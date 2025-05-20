@@ -104,19 +104,10 @@ class Api {
   }
 
   // Get food recommendations from backend
-  Future<RecommendationResponse> getFoodRecommendations() async {
-    try {
-      final response = await dio.get('/recommendations');
-      if (response.statusCode == 200 && response.data is Map<String, dynamic>) {
-        return RecommendationResponse.fromJson(response.data);
-      }
-      throw NotFoundException(
-        RequestOptions(path: '/recommendations'),
-        'No recommendations found',
-      );
-    } on DioError catch (e) {
-      throw e;
-    }
+  Future<Response> getFoodRecommendations() async {
+    
+      final Response response = await dio.get('/recommendations');
+      return response;
   }
 
   // Get glucose readings

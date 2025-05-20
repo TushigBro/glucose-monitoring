@@ -1,7 +1,9 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
-import 'package:get/get.dart';
+import 'package:get/get.dart' hide Response;
 import 'package:glucose_monitoring/api.dart';
+import 'package:glucose_monitoring/api_wrapper.dart';
 import 'package:glucose_monitoring/controller/data_controller.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
@@ -132,10 +134,14 @@ class _HomescreenState extends State<Homescreen> {
   // Replace hardcoded food with API call
   Future<List<Food>> fetchRecommendedFoods() async {
     try {
-      final response = await Api().getFoodRecommendations();
-      return response.recommendations;
+      Response response = await Api().getFoodRecommendations();
+      if (response.statusCode == 200 && response.data is Map<String, dynamic>) {
+        RecommendationResponse res =  RecommendationResponse.fromJson(response.data);
+        return res.recommendations;
+      } else {
+        return [];
+      }
     } catch (e) {
-      print("Error fetching recommendations: $e");
       return [];
     }
   }
