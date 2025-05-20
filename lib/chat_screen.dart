@@ -14,7 +14,7 @@ class _ChatScreenState extends State<MyChatScreen> {
   final List<Map<String, String>> messages = [];
 
   final String apiKey =
-      "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";
+      "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";
 
   Future<void> sendMessage(String message) async {
     if (message.trim().isEmpty) return;
@@ -30,13 +30,13 @@ class _ChatScreenState extends State<MyChatScreen> {
       final headers = {
         'Content-Type': 'application/json',
         'Authorization':
-            'Bearer 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',
+            "Bearer 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",
         'HTTP-Referer': 'https://undergraduate-project-ry8h.onrender.com/',
         'X-Title': 'gGauge Chatbot',
       };
 
       final body = jsonEncode({
-        'model': "mistralai/mistral-7b-instruct",
+        'model': "anthropic/claude-3-haiku",
         'messages': [
           {'role': 'system', 'content': 'You are a helpful health assistant.'},
           {'role': 'user', 'content': message},
