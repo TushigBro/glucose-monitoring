@@ -13,6 +13,7 @@ class DataController extends GetxController {
   void setUserData(Map<String, dynamic> data) async {
     userData.value = data;
     SharedPreferences prefs = await SharedPreferences.getInstance();
+    
     await prefs.setString(_userDataKey, jsonEncode(data));
 
     await updateUserDataToBackend(data);

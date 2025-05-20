@@ -9,6 +9,7 @@ import 'package:glucose_monitoring/controller/data_controller.dart';
 import 'package:glucose_monitoring/info_screen.dart';
 import 'package:glucose_monitoring/main_screen.dart';
 import 'package:glucose_monitoring/auth/register_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -125,6 +126,9 @@ class _LoginScreenState extends State<LoginScreen> {
                               );
                               DataController dataController =
                                   Get.put(DataController());
+                              SharedPreferences prefs = await SharedPreferences.getInstance();
+                              await prefs.setString(
+                                  'accessToken', response.data['access_token']);
                               dataController.setUserData(response.data['user']);
                               Navigator.push(
                                 context,
